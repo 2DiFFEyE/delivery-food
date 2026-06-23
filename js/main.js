@@ -532,3 +532,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// ==========================================
+// ПРИНУДИТЕЛЬНОЕ СКРЫТИЕ МОДАЛОК
+// ==========================================
+
+(function() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        if (loginModal) loginModal.style.display = 'none';
+        if (registerModal) registerModal.style.display = 'none';
+        console.log('🔒 Модалки принудительно скрыты');
+    }
+})();
