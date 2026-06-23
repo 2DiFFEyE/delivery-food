@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const path = require("path");
-const { Pool } = require("pg"); // ← ТОЛЬКО ОДИН РАЗ
+const { Pool } = require("pg");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -195,7 +195,7 @@ async function pollUpdates() {
             }
         } catch (error) {
             if (error.response && error.response.status === 409) {
-                console.log("⚠️ Конфликт (409). Ждём 5 секунд и перезапускаем...");
+                console.log("⚠️ Конфликт (409). Ждём 5 секунд...");
                 await new Promise(resolve => setTimeout(resolve, 5000));
                 continue;
             }
