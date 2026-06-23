@@ -1,4 +1,30 @@
 // ==========================================
+// АВТОРИЗАЦИЯ НА ВСЕХ СТРАНИЦАХ
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginBtn = document.getElementById('loginBtnHeader');
+
+    if (currentUser && loginBtnText) {
+        loginBtnText.textContent = currentUser.name;
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'none';
+            loginBtn.style.opacity = '0.8';
+        }
+        console.log(`👋 Привет, ${currentUser.name}!`);
+    } else {
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'auto';
+            loginBtn.style.opacity = '1';
+        }
+        if (loginBtnText) {
+            loginBtnText.textContent = 'Войти';
+        }
+    }
+});
+// ==========================================
 // КОРЗИНА
 // ==========================================
 
