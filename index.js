@@ -89,10 +89,14 @@ async function pollUpdates() {
                 }
             }
         } catch (error) {
+            if (error.response && error.response.status === 409) {
+                console.log("⚠️ Конфликт (409). Ждём 5 секунд и перезапускаем...");
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                continue;
+            }
             console.error("❌ Ошибка в Long Polling:", error.message);
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
     }
 }
 
