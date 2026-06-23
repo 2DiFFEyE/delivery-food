@@ -244,7 +244,7 @@
     </script>
 
     <!-- ===== СКРИПТ КАРТЫ ===== -->
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=c28600f3-760a-4488-8c4e-c4a61dcc0708&lang=ru_RU"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=332569e2-7161-4562-b2ea-d77c991908b4&lang=ru_RU"></script>
     <script>
         // ==========================================
         // ИНТЕРАКТИВНАЯ КАРТА (КЕМЕРОВО)
@@ -284,8 +284,7 @@
 
             // Метка
             var placemark = new ymaps.Placemark([55.3549, 86.0877], {
-                hintContent: 'Перетащите или кликните по карте',
-                balloonContent: 'Адрес доставки'
+                hintContent: 'Перетащите или кликните по карте'
             }, {
                 draggable: true,
                 preset: 'islands#blueCircleDotIcon'
@@ -293,46 +292,33 @@
 
             map.geoObjects.add(placemark);
 
-            // Получение адреса по координатам
+            // ===== ГЕОКОДЕР (ОТДЕЛЬНЫЙ КЛЮЧ) =====
             function getAddressFromCoords(coords) {
-                ymaps.geocode(coords, { 
-                    results: 1,
-                    kind: 'house'
-                })
-                .then(function(res) {
-                    var first = res.geoObjects.get(0);
-                    if (first) {
-                        var address = first.getAddressLine() || 'Адрес не найден';
-                        updateAddress(address);
-                        placemark.properties.set({
-                            hintContent: address,
-                            balloonContent: address
-                        });
-                    } else {
-                        updateAddress('Адрес не определён');
-                    }
-                })
-                .catch(function(err) {
-                    console.warn('⚠️ Ошибка геокодера:', err);
-                    // Пробуем ещё раз без kind
-                    ymaps.geocode(coords, { results: 1 })
-                        .then(function(res) {
-                            var first = res.geoObjects.get(0);
-                            if (first) {
-                                var address = first.getAddressLine() || 'Адрес не найден';
+                const geocoderUrl = 'https://geocode-maps.yandex.ru/1.x/?apikey=c28600f3-760a-4488-8c4e-c4a61dcc0708&geocode=' + coords[1] + ',' + coords[0] + '&format=json&results=1';
+                
+                fetch(geocoderUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        try {
+                            var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text;
+                            if (address) {
                                 updateAddress(address);
                                 placemark.properties.set({
                                     hintContent: address,
                                     balloonContent: address
                                 });
                             } else {
-                                updateAddress('Кликните точнее');
+                                updateAddress('Адрес не определён');
                             }
-                        })
-                        .catch(function() {
+                        } catch (e) {
+                            console.warn('⚠️ Ошибка парсинга геокодера:', e);
                             updateAddress('Кликните точнее');
-                        });
-                });
+                        }
+                    })
+                    .catch(function(err) {
+                        console.warn('⚠️ Ошибка геокодера:', err);
+                        updateAddress('Кликните точнее');
+                    });
             }
 
             // Клик по карте
@@ -350,13 +336,18 @@
 
             // Загрузка адреса из поля
             if (addressInput && addressInput.value) {
-                ymaps.geocode(addressInput.value, { results: 1 })
-                    .then(function(res) {
-                        var first = res.geoObjects.get(0);
-                        if (first) {
-                            var coords = first.geometry.getCoordinates();
-                            map.setCenter(coords, 15);
-                            placemark.geometry.setCoordinates(coords);
+                const geocoderUrl = 'https://geocode-maps.yandex.ru/1.x/?apikey=c28600f3-760a-4488-8c4e-c4a61dcc0708&geocode=' + encodeURIComponent(addressInput.value) + '&format=json&results=1';
+                fetch(geocoderUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        try {
+                            var coords = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ');
+                            var lat = parseFloat(coords[1]);
+                            var lon = parseFloat(coords[0]);
+                            map.setCenter([lat, lon], 15);
+                            placemark.geometry.setCoordinates([lat, lon]);
+                        } catch (e) {
+                            console.log('ℹ️ Не удалось найти адрес при загрузке');
                         }
                     })
                     .catch(function() {
