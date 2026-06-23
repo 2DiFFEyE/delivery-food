@@ -229,6 +229,7 @@ if (filterSelect) {
     });
 }
 
+// ===== ОФОРМЛЕНИЕ ЗАКАЗА =====
 if (orderButton) {
     orderButton.addEventListener('click', function(e) {
         e.preventDefault();
@@ -237,6 +238,11 @@ if (orderButton) {
             alert('Корзина пуста!');
             return;
         }
+
+        // БЕРЁМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ИЗ localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const userName = currentUser ? currentUser.name : 'Гость';
+        const userPhone = currentUser ? currentUser.phone : 'Не указан';
 
         let itemsText = '';
         let total = 0;
@@ -258,9 +264,10 @@ if (orderButton) {
         const addressInput = document.querySelector('.input-addres');
         const address = addressInput ? addressInput.value : 'Адрес не указан';
 
+        // ОТПРАВЛЯЕМ РЕАЛЬНЫЕ ДАННЫЕ
         const orderData = {
-            name: 'Клиент с сайта',
-            phone: '+7 (999) 123-45-67',
+            name: userName,
+            phone: userPhone,
             address: address,
             items: itemsText,
             total: total
@@ -271,20 +278,20 @@ if (orderButton) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert('✅ Заказ успешно отправлен!');
-                    clearCart();
-                    toggleModal();
-                } else {
-                    alert('❌ Ошибка при отправке заказа. Попробуйте еще раз.');
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                alert('❌ Не удалось отправить заказ. Проверьте подключение к интернету.');
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                alert('✅ Заказ успешно отправлен!');
+                clearCart();
+                toggleModal();
+            } else {
+                alert('❌ Ошибка при отправке заказа. Попробуйте еще раз.');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('❌ Не удалось отправить заказ. Проверьте подключение к интернету.');
+        });
     });
 }
 
