@@ -369,10 +369,11 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔒 Модалки закрыты');
     }
 
-    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ (пересоздаём, чтобы убрать старые обработчики) =====
+        // ===== КНОПКА "ВОЙТИ" В ШАПКЕ (пересоздаём, чтобы убрать старые обработчики) =====
     const oldLoginBtn = document.getElementById('loginBtnHeader');
     const loginBtnText = document.getElementById('loginBtnText');
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const logoutBtn = document.getElementById('logoutBtn');
 
     // Удаляем старую кнопку и создаём новую
     if (oldLoginBtn && oldLoginBtn.parentNode) {
@@ -391,6 +392,8 @@ document.addEventListener('DOMContentLoaded', function() {
             loginBtn.style.pointerEvents = 'none';
             loginBtn.style.opacity = '0.8';
         }
+        // Показываем кнопку "Выйти"
+        if (logoutBtn) logoutBtn.style.display = 'inline-block';
         console.log(`👋 Привет, ${currentUser.name}!`);
     } else {
         if (newLoginBtnText) {
@@ -405,7 +408,49 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             console.log('✅ Кнопка "Войти" привязана');
         }
+        // Скрываем кнопку "Выйти"
+        if (logoutBtn) logoutBtn.style.display = 'none';
     }
+
+    // ===== ВЫХОД ИЗ АККАУНТА =====
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('currentUser');
+            // Обновляем кнопку
+            const btnText = document.getElementById('loginBtnText');
+            const btn = document.getElementById('loginBtnHeader');
+            if (btnText) btnText.textContent = 'Войти';
+            if (btn) {
+                btn.style.pointerEvents = 'auto';
+                btn.style.opacity = '1';
+            }
+            logoutBtn.style.display = 'none';
+            alert('👋 Вы вышли из аккаунта');
+            setTimeout(() => location.reload(), 300);
+        });
+    }
+
+    // ===== ВЫХОД ИЗ АККАУНТА =====
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('currentUser');
+        // Обновляем кнопку
+        const btnText = document.getElementById('loginBtnText');
+        const btn = document.getElementById('loginBtnHeader');
+        if (btnText) btnText.textContent = 'Войти';
+        if (btn) {
+            btn.style.pointerEvents = 'auto';
+            btn.style.opacity = '1';
+        }
+        logoutBtn.style.display = 'none';
+        alert('👋 Вы вышли из аккаунта');
+        // Перезагружаем страницу, чтобы обновить состояние
+        setTimeout(() => location.reload(), 300);
+    });
+}
 
     // ===== КРЕСТИКИ =====
     if (closeLogin) closeLogin.addEventListener('click', closeAll);
