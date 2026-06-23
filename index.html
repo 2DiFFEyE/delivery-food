@@ -207,6 +207,72 @@
 
 <script src="js/main.js"></script>
 </body>
+<!-- Модальное окно входа -->
+<div class="modal-login" id="loginModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Вход</h3>
+            <button class="close" id="closeLogin">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="loginForm">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Email или логин</label>
+                    <input type="text" id="loginEmail" placeholder="Введите email" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Введите пароль" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <button type="submit" class="button button-primary" style="flex: 1; justify-content: center;">Войти</button>
+                    <button type="button" class="button" id="openRegisterBtn">Зарегистрироваться</button>
+                </div>
+                <div style="margin-top: 10px; text-align: center;">
+                    <a href="#" id="forgotPassword" style="color: #1890FF; text-decoration: none; font-size: 14px;">Восстановить пароль</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Модальное окно регистрации -->
+<div class="modal-login" id="registerModal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Регистрация</h3>
+            <button class="close" id="closeRegister">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="registerForm">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Имя</label>
+                    <input type="text" id="regName" placeholder="Введите имя" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Email</label>
+                    <input type="email" id="regEmail" placeholder="Введите email" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Пароль</label>
+                    <input type="password" id="regPassword" placeholder="Введите пароль (минимум 6 символов)" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Повторите пароль</label>
+                    <input type="password" id="regPasswordRepeat" placeholder="Повторите пароль" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                        <input type="checkbox" id="regAgree"> Я согласен на обработку персональных данных
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="submit" class="button button-primary" style="flex: 1; justify-content: center;">Зарегистрироваться</button>
+                    <button type="button" class="button" id="openLoginFromRegister">Уже есть аккаунт? Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- Кнопка "Наверх" -->
 <button id="scrollTop" style="position: fixed; bottom: 30px; right: 30px; background: #1890FF; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4); z-index: 999;">
     ↑

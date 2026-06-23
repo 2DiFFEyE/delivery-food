@@ -750,3 +750,64 @@ body {
         overflow: hidden !important;
     }
 }
+/* ==========================================
+   МОДАЛКИ ВХОДА / РЕГИСТРАЦИИ
+   ========================================== */
+.modal-login {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-login .modal-dialog {
+    max-width: 450px;
+    width: 100%;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 30px 35px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-login .modal-header {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-login .modal-title {
+    font-size: 28px;
+    margin: 0;
+}
+
+.modal-login .close {
+    font-size: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.modal-login .modal-body {
+    margin-bottom: 0;
+}
+
+.modal-login label {
+    color: #302C34;
+}
+
+.modal-login input {
+    transition: border 0.2s;
+}
+
+.modal-login input:focus {
+    border-color: #1890FF;
+    outline: none;
+}
