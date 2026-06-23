@@ -343,29 +343,6 @@ loadCart();
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM загружен, запускаем авторизацию');
 
-    // ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const loginBtnText = document.getElementById('loginBtnText');
-    const loginBtn = document.getElementById('loginBtnHeader');
-
-    if (currentUser && loginBtnText) {
-        loginBtnText.textContent = currentUser.name;
-        if (loginBtn) {
-            loginBtn.style.pointerEvents = 'none';
-            loginBtn.style.opacity = '0.8';
-        }
-        console.log(`👋 Привет, ${currentUser.name}!`);
-    } else {
-        if (loginBtn) {
-            loginBtn.style.pointerEvents = 'auto';
-            loginBtn.style.opacity = '1';
-        }
-        if (loginBtnText) {
-            loginBtnText.textContent = 'Войти';
-        }
-        console.log('👤 Пользователь не авторизован');
-    }
-
     const loginModal = document.getElementById('loginModal');
     const registerModal = document.getElementById('registerModal');
     const closeLogin = document.getElementById('closeLogin');
@@ -392,13 +369,42 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔒 Модалки закрыты');
     }
 
-    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ (если нет пользователя) =====
-    if (loginBtn && !currentUser) {
-        loginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLogin();
-        });
-        console.log('✅ Кнопка "Войти" привязана');
+    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ (пересоздаём, чтобы убрать старые обработчики) =====
+    const oldLoginBtn = document.getElementById('loginBtnHeader');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    // Удаляем старую кнопку и создаём новую
+    if (oldLoginBtn && oldLoginBtn.parentNode) {
+        const newLoginBtn = oldLoginBtn.cloneNode(true);
+        oldLoginBtn.parentNode.replaceChild(newLoginBtn, oldLoginBtn);
+    }
+
+    // Получаем ссылку на новую кнопку
+    const loginBtn = document.getElementById('loginBtnHeader');
+    const newLoginBtnText = document.getElementById('loginBtnText');
+
+    // Проверяем авторизацию
+    if (currentUser && newLoginBtnText) {
+        newLoginBtnText.textContent = currentUser.name;
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'none';
+            loginBtn.style.opacity = '0.8';
+        }
+        console.log(`👋 Привет, ${currentUser.name}!`);
+    } else {
+        if (newLoginBtnText) {
+            newLoginBtnText.textContent = 'Войти';
+        }
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'auto';
+            loginBtn.style.opacity = '1';
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showLogin();
+            });
+            console.log('✅ Кнопка "Войти" привязана');
+        }
     }
 
     // ===== КРЕСТИКИ =====
@@ -510,14 +516,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     localStorage.setItem('currentUser', JSON.stringify(data.user));
                     alert(`✅ Добро пожаловать, ${data.user.name}!`);
                     closeAll();
-                    if (loginBtnText) {
-                        loginBtnText.textContent = data.user.name;
+                    // Обновляем кнопку без перезагрузки
+                    const btnText = document.getElementById('loginBtnText');
+                    const btn = document.getElementById('loginBtnHeader');
+                    if (btnText) btnText.textContent = data.user.name;
+                    if (btn) {
+                        btn.style.pointerEvents = 'none';
+                        btn.style.opacity = '0.8';
                     }
-                    if (loginBtn) {
-                        loginBtn.style.pointerEvents = 'none';
-                        loginBtn.style.opacity = '0.8';
-                    }
-                    setTimeout(() => location.reload(), 500);
                 } else {
                     alert('❌ ' + data.message);
                 }
@@ -525,4 +531,4 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(() => alert('❌ Ошибка сервера'));
         });
     }
-}); // ← ЭТО ЗАКРЫВАЕТ DOMContentLoaded
+});
