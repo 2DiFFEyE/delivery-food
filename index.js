@@ -5,7 +5,7 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ⚠️ Токен бота (лучше вынести в переменные окружения)
+// ⚠️ Токен бота
 const TOKEN = process.env.TELEGRAM_TOKEN || "8349164104:AAHUqUw8W8zfrnf6-xYujTtdqWNAzkBQ_Bc";
 
 // Middleware
@@ -31,7 +31,7 @@ app.get("/:page.html", (req, res) => {
     });
 });
 
-// 🤖 Webhook для Telegram
+// 🤖 Webhook для Telegram (ОДИН РАЗ!)
 app.post("/telegram-webhook", async (req, res) => {
     const update = req.body;
     console.log("📩 Пришло обновление:", update);
@@ -45,10 +45,12 @@ app.post("/telegram-webhook", async (req, res) => {
 
     console.log("💬 Текст:", text);
 
+    // Сохраняем chatId для отправки заказов
     if (text === "/start") {
-        await sendMessage(chatId, "👋 Привет! Я бот доставки Delivery Food.\n\n📦 Заказы с сайта будут приходить сюда.");
+        global.chatIdAdmin = chatId;
+        await sendMessage(chatId, "👋 Привет! Я бот доставки Delivery Food.\n\n📦 Теперь заказы с сайта будут приходить сюда!");
     } else {
-        await sendMessage(chatId, "🤖 Я пока что умею только получать заказы с сайта. Напиши /start, чтобы проверить, что я жив!");
+        await sendMessage(chatId, "🤖 Я бот доставки. Напиши /start, чтобы проверить, что я жив!");
     }
 
     res.sendStatus(200);
@@ -61,7 +63,6 @@ app.post("/order", async (req, res) => {
 
         console.log("📦 Новый заказ:", req.body);
 
-        // Формируем сообщение для Telegram
         const message = `
 📦 **НОВЫЙ ЗАКАЗ!**
 
@@ -75,13 +76,10 @@ ${items || "Нет товаров"}
 💰 **Итого:** ${total || "0"} ₽
         `;
 
-        // Отправляем админу (сохраняем chatId из /start)
-        // Если chatIdAdmin еще не сохранен, отправляем в тот же чат, откуда пришел /start
         if (global.chatIdAdmin) {
             await sendMessage(global.chatIdAdmin, message);
         } else {
             console.log("⚠️ Админ еще не написал /start, заказ сохранен в логах");
-            // Можно сохранить в файл или БД
         }
 
         res.json({ 
@@ -110,24 +108,6 @@ async function sendMessage(chatId, text) {
         console.error("❌ Ошибка отправки в Telegram:", error.message);
     }
 }
-
-// Запоминаем chatId, когда пользователь пишет /start
-app.post("/telegram-webhook", async (req, res) => {
-    const update = req.body;
-    
-    if (update.message) {
-        const chatId = update.message.chat.id;
-        const text = update.message.text;
-
-        // Сохраняем chatId для отправки заказов
-        if (text === "/start") {
-            global.chatIdAdmin = chatId;
-            await sendMessage(chatId, "👋 Привет! Я бот доставки Delivery Food.\n\n📦 Теперь заказы с сайта будут приходить сюда!");
-        }
-    }
-    
-    res.sendStatus(200);
-});
 
 // 🚀 Запускаем сервер
 app.listen(PORT, () => {
