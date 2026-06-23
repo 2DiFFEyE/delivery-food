@@ -198,6 +198,12 @@ body {
     flex: 0 0 calc(33.333% - 20px);
     text-decoration: none;
     min-width: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
 .card-img {
@@ -486,6 +492,79 @@ body {
 /* ==========================================
    АДАПТИВНОСТЬ (МЕДИА-ЗАПРОСЫ)
    ========================================== */
+@media (max-width: 1366px) {
+    .container {
+        max-width: 960px;
+    }
+
+    .promo {
+        background-position: center right -300px;
+        background-size: 750px;
+    }
+
+    .card-img {
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        max-width: 750px;
+    }
+
+    .promo {
+        padding: 50px;
+        background-size: 500px;
+        background-position: center right -200px;
+    }
+
+    .promo-text {
+        font-size: 18px;
+        max-width: 400px;
+    }
+
+    .card {
+        flex-basis: 49%;
+    }
+
+    .footer-link {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 560px;
+    }
+
+    .promo {
+        background-size: 400px;
+        background-position: bottom 50px right -200px;
+    }
+
+    .promo-title {
+        font-size: 24px;
+        line-height: 1.4;
+    }
+
+    .promo-text {
+        margin-top: 0;
+    }
+
+    .card-title {
+        font-size: 18px;
+    }
+
+    .footer-contacts {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 10px;
+    }
+}
+
 @media (max-width: 578px) {
     .container {
         width: 90%;
@@ -697,93 +776,183 @@ body {
         font-size: 14px;
     }
 
+    /* ===== КОРЗИНА (МОДАЛКА) ===== */
     .modal-dialog {
-        padding: 20px;
-        margin: 10px;
-        width: 95%;
+        padding: 25px 20px !important;
+        margin: 15px !important;
+        width: 95% !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        border-radius: 12px !important;
     }
 
     .modal-header {
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 10px;
+        margin-bottom: 15px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
     }
 
     .modal-title {
-        font-size: 22px;
+        font-size: 22px !important;
+        margin: 0 !important;
     }
 
     .close {
-        font-size: 28px;
+        font-size: 28px !important;
+        padding: 0 8px !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    #restaurant-filter {
+        font-size: 14px !important;
+        padding: 6px 10px !important;
+        max-width: 180px !important;
+        border-radius: 6px !important;
+        border: 1px solid #D9D9D9 !important;
+        margin-bottom: 10px !important;
+        width: 100% !important;
     }
 
     .modal-body {
-        margin-bottom: 20px;
-        max-height: 50vh;
-        overflow-y: auto;
+        margin-bottom: 15px !important;
+        max-height: 45vh !important;
+        overflow-y: auto !important;
+        padding: 0 2px !important;
     }
 
     .food-row {
-        flex-wrap: wrap;
-        gap: 5px;
-        padding-bottom: 10px;
-        margin-bottom: 10px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 10px 0 !important;
+        margin-bottom: 5px !important;
+        border-bottom: 1px solid #f0f0f0 !important;
     }
 
     .food-name {
-        font-size: 14px;
-        flex: 1 1 100%;
+        font-size: 15px !important;
+        flex: 1 !important;
+        color: #302C34 !important;
+        font-weight: 500 !important;
     }
 
     .food-price {
-        font-size: 15px;
-        margin-right: auto;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: #1890FF !important;
+        white-space: nowrap !important;
+        margin-right: 5px !important;
     }
 
     .food-counter {
-        margin-left: auto;
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex-shrink: 0 !important;
     }
 
     .counter-button {
-        width: 32px;
-        height: 28px;
-        font-size: 14px;
+        width: 34px !important;
+        height: 32px !important;
+        font-size: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+        background: #f5f5f5 !important;
+        border: 1px solid #D9D9D9 !important;
+        color: #333 !important;
+        cursor: pointer !important;
+        user-select: none !important;
+    }
+
+    .counter-button:active {
+        background: #1890FF !important;
+        color: white !important;
     }
 
     .counter {
-        font-size: 14px;
-        margin: 0 8px;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        min-width: 28px !important;
+        text-align: center !important;
+        margin: 0 2px !important;
     }
 
     .modal-footer {
-        flex-wrap: wrap;
-        gap: 12px;
-        justify-content: center;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding-top: 15px !important;
+        border-top: 1px solid #e8e8e8 !important;
     }
 
     .modal-pricetag {
-        font-size: 18px;
-        padding: 10px 18px;
-        width: 100%;
-        text-align: center;
+        font-size: 20px !important;
+        padding: 12px 20px !important;
+        width: 100% !important;
+        text-align: center !important;
+        background: #1890FF !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
     }
 
     .footer-buttons {
-        width: 100%;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
+        display: flex !important;
+        gap: 10px !important;
+        width: 100% !important;
     }
 
     .footer-buttons .button {
-        flex: 1;
-        justify-content: center;
-        min-width: 100px;
+        flex: 1 !important;
+        padding: 12px 16px !important;
+        font-size: 15px !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
+        border: 1px solid #D9D9D9 !important;
+        background: #fff !important;
+        color: #595959 !important;
+        cursor: pointer !important;
+        min-height: 48px !important;
     }
 
-    /* Стили для групп ресторанов в корзине */
+    .footer-buttons .button-primary {
+        background: #1890FF !important;
+        border: 1px solid #1890FF !important;
+        color: white !important;
+        font-weight: 600 !important;
+    }
+
+    .footer-buttons .button-primary:active {
+        background: #40A9FF !important;
+    }
+
+    .footer-buttons .button:last-child:active {
+        background: #f5f5f5 !important;
+    }
+
+    /* Группы ресторанов в корзине */
+    .restaurant-group {
+        margin-bottom: 12px !important;
+    }
+
     .restaurant-group h4 {
         font-size: 16px !important;
+        margin: 0 0 6px 0 !important;
+        padding: 6px 0 4px 0 !important;
+        border-bottom: 2px solid #1890FF !important;
+        color: #302C34 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Сообщение "Корзина пуста" */
+    .modal-body > p {
+        font-size: 16px !important;
+        padding: 30px 0 !important;
+        color: #888 !important;
     }
 
     /* Кнопка "Наверх" на телефоне */
