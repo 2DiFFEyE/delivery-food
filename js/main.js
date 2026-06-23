@@ -48,11 +48,17 @@ function getCurrentRestaurant() {
 
 // ---------- Открытие/закрытие модалки ----------
 function toggleModal() {
-  modal.classList.toggle("is-open");
-  if (modal.classList.contains("is-open")) {
-    updateFilterOptions();
-    renderCart();
-  }
+    modal.classList.toggle("is-open");
+    if (modal.classList.contains("is-open")) {
+        // Блокируем скролл на телефоне
+        if (window.innerWidth <= 578) {
+            document.body.style.overflow = 'hidden';
+        }
+        updateFilterOptions();
+        renderCart();
+    } else {
+        document.body.style.overflow = '';
+    }
 }
 
 cartButton.addEventListener("click", toggleModal);

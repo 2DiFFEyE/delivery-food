@@ -684,3 +684,50 @@ body {
         margin-left: 0;
     }
 }
+/* ==========================================
+   КОРЗИНА НА ТЕЛЕФОНЕ (затемнение + размытие)
+   ========================================== */
+@media (max-width: 578px) {
+    /* Затемняем фон, когда корзина открыта */
+    .modal.is-open {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(0, 0, 0, 0.7) !important;
+        z-index: 9999 !important;
+        padding: 20px !important;
+    }
+
+    /* Размываем всё, кроме корзины */
+    .modal.is-open .header,
+    .modal.is-open .main,
+    .modal.is-open .footer,
+    .modal.is-open .promo,
+    .modal.is-open .restaurants,
+    .modal.is-open .container {
+        filter: blur(4px) !important;
+        pointer-events: none !important;
+        user-select: none !important;
+    }
+
+    /* Сама корзина — чёткая и по центру */
+    .modal.is-open .modal-dialog {
+        filter: none !important;
+        pointer-events: auto !important;
+        user-select: auto !important;
+        margin: 0 auto !important;
+        padding: 25px 20px !important;
+        width: 95% !important;
+        max-width: 500px !important;
+        max-height: 85vh !important;
+        overflow-y: auto !important;
+        border-radius: 16px !important;
+        background: #fff !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Блокируем скролл на телефоне */
+    .modal.is-open body {
+        overflow: hidden !important;
+    }
+}
