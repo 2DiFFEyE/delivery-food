@@ -537,21 +537,20 @@ body {
         max-width: 560px;
     }
 
-        .promo {
+            .promo {
         background: #FFF1B8;
-        padding: 25px 20px 20px 20px;
+        padding: 40px 20px 20px 20px; /* ← увеличил верхний отступ */
         background-image: url(../img/promo-img.png);
         background-size: 120px;
         background-position: bottom right 15px;
         background-repeat: no-repeat;
         margin-bottom: 25px;
         border-radius: 10px;
-        min-height: 140px;
+        min-height: 150px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        margin-top: 10px; /* ← ЧУТЬ НИЖЕ */
-        padding-top: 30px; /* ← БОЛЬШЕ ВЕРХНИЙ ОТСТУП */
+        margin-top: 15px; /* ← добавил отступ сверху */
     }
 
     .promo-title {
