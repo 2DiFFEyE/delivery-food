@@ -245,98 +245,109 @@
 
     <!-- ===== СКРИПТ КАРТЫ (рабочий) ===== -->
     <script src="https://api-maps.yandex.ru/2.1/?apikey=9db0e295-2c84-4670-88d9-af49a26ceb58&lang=ru_RU"></script>
-    <script>
-        // ==========================================
-        // ИНТЕРАКТИВНАЯ КАРТА (КЕМЕРОВО)
-        // ==========================================
+<script>
+    // ==========================================
+    // КАРТА С РУЧНЫМ ВВОДОМ АДРЕСА
+    // ==========================================
 
-        const addressInput = document.getElementById('addressInput');
-        const addressDisplay = document.getElementById('addressDisplay');
-        const mainAddressInput = document.getElementById('mainAddressInput');
+    const addressInput = document.getElementById('addressInput');
+    const addressDisplay = document.getElementById('addressDisplay');
+    const mainAddressInput = document.getElementById('mainAddressInput');
 
-        function updateAddress(value) {
-            const val = value.trim() || 'Адрес не указан';
-            if (addressInput) addressInput.value = val;
-            if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
-            if (mainAddressInput) mainAddressInput.value = val;
-        }
+    function updateAddress(value) {
+        const val = value.trim() || 'Адрес не указан';
+        if (addressInput) addressInput.value = val;
+        if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
+        if (mainAddressInput) mainAddressInput.value = val;
+    }
 
-        // Синхронизация полей
-        if (addressInput) {
-            addressInput.addEventListener('input', function() {
-                updateAddress(this.value);
-            });
-        }
-        if (mainAddressInput) {
-            mainAddressInput.addEventListener('input', function() {
-                updateAddress(this.value);
-            });
-        }
-
-        ymaps.ready(function() {
-            var map = new ymaps.Map('map', {
-                center: [55.3549, 86.0877],
-                zoom: 14,
-                controls: ['zoomControl']
-            });
-
-            var placemark = new ymaps.Placemark([55.3549, 86.0877], {
-                hintContent: 'Перетащите или кликните по карте'
-            }, {
-                draggable: true,
-                preset: 'islands#blueCircleDotIcon'
-            });
-
-            map.geoObjects.add(placemark);
-
-            function getAddressFromCoords(coords) {
-                ymaps.geocode(coords, { results: 1 })
-                    .then(function(res) {
-                        var first = res.geoObjects.get(0);
-                        if (first) {
-                            var address = first.getAddressLine() || 'Адрес не найден';
-                            updateAddress(address);
-                            placemark.properties.set({
-                                hintContent: address,
-                                balloonContent: address
-                            });
-                        } else {
-                            updateAddress('Адрес не определён');
-                        }
-                    })
-                    .catch(function() {
-                        updateAddress('Не удалось определить адрес');
-                    });
-            }
-
-            // Клик по карте
-            map.events.add('click', function(e) {
-                var coords = e.get('coords');
-                placemark.geometry.setCoordinates(coords);
-                getAddressFromCoords(coords);
-            });
-
-            // Перетаскивание метки
-            placemark.events.add('dragend', function() {
-                var coords = placemark.geometry.getCoordinates();
-                getAddressFromCoords(coords);
-            });
-
-            // Загрузка адреса из поля
-            if (addressInput && addressInput.value) {
-                ymaps.geocode(addressInput.value, { results: 1 })
-                    .then(function(res) {
-                        var first = res.geoObjects.get(0);
-                        if (first) {
-                            var coords = first.geometry.getCoordinates();
-                            map.setCenter(coords, 15);
-                            placemark.geometry.setCoordinates(coords);
-                        }
-                    })
-                    .catch(function() {});
-            }
+    if (addressInput) {
+        addressInput.addEventListener('input', function() {
+            updateAddress(this.value);
         });
-    </script>
+    }
+    if (mainAddressInput) {
+        mainAddressInput.addEventListener('input', function() {
+            updateAddress(this.value);
+        });
+    }
+
+    ymaps.ready(function() {
+        var map = new ymaps.Map('map', {
+            center: [55.3549, 86.0877],
+            zoom: 14,
+            controls: ['zoomControl']
+        });
+
+        var placemark = new ymaps.Placemark([55.3549, 86.0877], {
+            hintContent: 'Перетащите метку или введите адрес вручную'
+        }, {
+            draggable: true,
+            preset: 'islands#blueCircleDotIcon'
+        });
+
+        map.geoObjects.add(placemark);
+
+        // При перетаскивании метки — показываем координаты (можно заменить на адрес)
+        placemark.events.add('dragend', function() {
+            var coords = placemark.geometry.getCoordinates();
+            // Пробуем получить адрес
+            ymaps.geocode(coords, { results: 1 })
+                .then(function(res) {
+                    var first = res.geoObjects.get(0);
+                    if (first) {
+                        var address = first.getAddressLine() || 'Адрес найден';
+                        updateAddress(address);
+                        placemark.properties.set({
+                            hintContent: address,
+                            balloonContent: address
+                        });
+                    }
+                })
+                .catch(function() {
+                    // Если адрес не определяется — показываем улицу и город
+                    var coordText = coords[0].toFixed(5) + ', ' + coords[1].toFixed(5);
+                    updateAddress('Кемерово, координаты: ' + coordText);
+                });
+        });
+
+        // Клик по карте
+        map.events.add('click', function(e) {
+            var coords = e.get('coords');
+            placemark.geometry.setCoordinates(coords);
+            ymaps.geocode(coords, { results: 1 })
+                .then(function(res) {
+                    var first = res.geoObjects.get(0);
+                    if (first) {
+                        var address = first.getAddressLine() || 'Адрес найден';
+                        updateAddress(address);
+                        placemark.properties.set({
+                            hintContent: address,
+                            balloonContent: address
+                        });
+                    } else {
+                        updateAddress('Кемерово, кликните точнее');
+                    }
+                })
+                .catch(function() {
+                    updateAddress('Кемерово, кликните точнее');
+                });
+        });
+
+        if (addressInput && addressInput.value) {
+            ymaps.geocode(addressInput.value, { results: 1 })
+                .then(function(res) {
+                    var first = res.geoObjects.get(0);
+                    if (first) {
+                        var coords = first.geometry.getCoordinates();
+                        map.setCenter(coords, 15);
+                        placemark.geometry.setCoordinates(coords);
+                    }
+                })
+                .catch(function() {});
+        }
+    });
+</script>
 
     <script src="js/main.js"></script>
 
