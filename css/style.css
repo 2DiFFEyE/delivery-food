@@ -550,7 +550,7 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        margin-top: 15px; /* ← добавил отступ сверху */
+        margin-top: 40px; /* ← добавил отступ сверху */
     }
 
     .promo-title {
