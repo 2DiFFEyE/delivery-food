@@ -222,16 +222,53 @@ if (filterSelect) {
 
 // ---------- Оформление заказа ----------
 if (orderButton) {
-  orderButton.addEventListener('click', function() {
+  orderButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    
     if (cart.length === 0) {
-      alert('Корзина пуста');
+      alert('Корзина пуста!');
       return;
     }
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const restaurants = getUniqueRestaurants().join(', ');
-    alert(`✅ Заказ оформлен на сумму ${total} ₽.\nРестораны: ${restaurants}\nСпасибо за заказ!`);
-    clearCart();
-    toggleModal();
+
+    // Формируем текст заказа
+    let itemsText = '';
+    let total = 0;
+    cart.forEach(item => {
+      itemsText += `${item.name} x${item.quantity} - ${item.price * item.quantity} ₽\n`;
+      total += item.price * item.quantity;
+    });
+
+    // Данные для отправки
+    const orderData = {
+      name: 'Клиент с сайта',
+      phone: '+7 (999) 123-45-67',
+      address: 'ул. Пушкина, 10',
+      items: itemsText,
+      total: total
+    };
+
+    // Отправляем на сервер
+    fetch('/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        alert('✅ Заказ успешно отправлен!');
+        clearCart();
+        toggleModal();
+      } else {
+        alert('❌ Ошибка при отправке заказа. Попробуйте еще раз.');
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+      alert('❌ Не удалось отправить заказ. Проверьте подключение к интернету.');
+    });
   });
 }
 
