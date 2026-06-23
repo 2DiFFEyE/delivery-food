@@ -12,47 +12,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // ---------- ОТДАЕМ СТРАНИЦЫ ----------
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 app.get("/:page.html", (req, res) => {
-    const page = req.params.page;
-    const filePath = path.join(__dirname, `${page}.html`);
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            res.status(404).send("Страница не найдена");
-        }
-    });
-});
-
-// ---------- WEBHOOK ДЛЯ TELEGRAM ----------
-app.post("/telegram-webhook", async (req, res) => {
-    const update = req.body;
-    console.log("📩 Пришло обновление:", JSON.stringify(update));
-
-    // Проверяем, есть ли сообщение
-    if (!update.message) {
-        console.log("⏭️ Нет сообщения, пропускаем");
-        return res.sendStatus(200);
-    }
-
-    const chatId = update.message.chat.id;
-    const text = update.message.text;
-    const username = update.message.from?.username || "без username";
-
-    console.log(`💬 Сообщение от @${username} (chatId: ${chatId}): "${text}"`);
-
-    // Сохраняем chatId для отправки заказов
-    if (text === "/start") {
-        global.chatIdAdmin = chatId;
-        console.log(`✅ chatId сохранен: ${chatId}`);
-        await sendMessage(chatId, "👋 Привет! Я бот доставки Delivery Food.\n\n📦 Теперь заказы с сайта будут приходить сюда!");
-    } else {
-        await sendMessage(chatId, "🤖 Напиши /start, чтобы я запомнил тебя и мог присылать заказы!");
-    }
-
-    res.sendStatus(200);
+    const filePath = path.join(__dirname, `${req.params.page}.html`);
+    res.sendFile(filePath, (err) => err && res.status(404).send("Страница не найдена"));
 });
 
 // ---------- ПРИЕМ ЗАКАЗОВ ----------
@@ -76,34 +40,65 @@ ${items || "Нет товаров"}
 
         if (global.chatIdAdmin) {
             await sendMessage(global.chatIdAdmin, message);
-            console.log("✅ Заказ отправлен в Telegram");
+            console.log("✅ Заказ отправлен");
         } else {
             console.log("⚠️ Админ еще не написал /start");
         }
 
-        res.json({ ok: true, message: "Заказ успешно отправлен! 🎉" });
+        res.json({ ok: true });
     } catch (error) {
-        console.error("❌ Ошибка при обработке заказа:", error);
-        res.status(500).json({ ok: false, message: "Ошибка" });
+        console.error("❌ Ошибка:", error);
+        res.status(500).json({ ok: false });
     }
 });
 
 // ---------- ФУНКЦИЯ ОТПРАВКИ ----------
 async function sendMessage(chatId, text) {
     try {
-        const response = await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
             chat_id: chatId,
             text: text,
             parse_mode: "Markdown"
         });
-        console.log("✅ Сообщение отправлено в Telegram");
-        return response.data;
+        console.log("✅ Сообщение отправлено");
     } catch (error) {
-        console.error("❌ Ошибка отправки в Telegram:", error.response?.data || error.message);
+        console.error("❌ Ошибка отправки:", error.message);
+    }
+}
+
+// ---------- LONG POLLING: Бот САМ забирает сообщения ----------
+async function pollUpdates() {
+    let offset = 0;
+    console.log("🔄 Бот запущен в режиме Long Polling...");
+
+    while (true) {
+        try {
+            const response = await axios.get(`https://api.telegram.org/bot${TOKEN}/getUpdates`, {
+                params: { offset: offset, timeout: 30 }
+            });
+
+            const updates = response.data.result;
+            for (const update of updates) {
+                offset = update.update_id + 1;
+
+                if (update.message && update.message.text === "/start") {
+                    const chatId = update.message.chat.id;
+                    global.chatIdAdmin = chatId;
+                    console.log(`✅ chatId сохранен: ${chatId}`);
+                    await sendMessage(chatId, "👋 Привет! Я бот доставки.\n\n📦 Теперь заказы с сайта будут приходить сюда!");
+                }
+            }
+        } catch (error) {
+            console.error("❌ Ошибка в Long Polling:", error.message);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
 }
 
 // ---------- ЗАПУСК ----------
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Сервер запущен на порту ${PORT}`);
+    console.log(`🔄 Запускаем Long Polling...`);
+    pollUpdates(); // Запускаем бота
 });
