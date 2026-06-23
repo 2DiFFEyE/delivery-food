@@ -1,33 +1,12 @@
 const express = require("express");
 const axios = require("axios");
 const path = require("path");
-const { Pool } = require("pg");
+const { Pool } = require("pg"); // ← ТОЛЬКО ОДИН РАЗ
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 const TOKEN = process.env.TELEGRAM_TOKEN || "8349164104:AAHUqUw8W8zfrnf6-xYujTtdqWNAzkBQ_Bc";
-// ===== ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ =====
-const { Pool } = require("pg");
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
-
-pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT NOW()
-    );
-`).then(() => {
-    console.log('✅ Таблица users готова');
-}).catch(err => {
-    console.error('❌ Ошибка создания таблицы:', err);
-});
 
 // ===== ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ =====
 const pool = new Pool({
@@ -35,7 +14,6 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-// Создаём таблицу users, если её нет
 pool.query(`
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -75,13 +53,11 @@ app.post("/api/register", async (req, res) => {
         const { name, email, password } = req.body;
         console.log("📝 Регистрация:", { name, email });
 
-        // Проверяем, есть ли пользователь
         const check = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (check.rows.length > 0) {
             return res.status(400).json({ ok: false, message: "Пользователь уже существует" });
         }
 
-        // Сохраняем
         await pool.query(
             "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)",
             [name, email, password]
@@ -230,19 +206,6 @@ async function pollUpdates() {
 }
 
 // ===== ЗАПУСК =====
-// ===== ПРОВЕРКА БД =====
-app.get("/api/check-db", async (req, res) => {
-    try {
-        const result = await pool.query("SELECT COUNT(*) FROM users");
-        res.json({
-            ok: true,
-            users: result.rows[0].count,
-            message: "База данных работает!"
-        });
-    } catch (error) {
-        res.status(500).json({ ok: false, error: error.message });
-    }
-});
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Сервер запущен на порту ${PORT}`);
     console.log(`🔄 Запускаем Long Polling...`);
