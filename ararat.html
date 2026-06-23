@@ -1,275 +1,299 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Арарат - доставка еды на дом</title>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="css/normalize.css"> 
-	<link rel="stylesheet" href="css/animate.css">
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="icon" href="favicon.ico" type="image/svg+xml">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Арарат - доставка еды на дом</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/normalize.css"> 
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="favicon.ico" type="image/svg+xml">
 </head>
 <body>
-	<header class="header">
-    <div class="container">
-        <a href="index.html" class="logo"><img src="img/logo.svg" alt="logo"></a>
-        <input type="text" class="input input-addres" placeholder="Адрес доставки">
-        <div class="buttons">
-            <button class="button button-primary" id="loginBtnHeader">
-                <img src="img/user.svg" alt="user" class="button-icon">
-                <span class="button-text" id="loginBtnText">Войти</span>
-            </button>
-            <button class="button" id="cart-button">
-                <img src="img/shopping-cart.svg" alt="shopping cart" class="button-icon">
-                <span class="button-text">Корзина</span>
-                <span class="cart-badge" id="cart-count" style="display: none;">0</span>
-            </button>
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="logo"></a>
+            <input type="text" class="input input-addres" id="mainAddressInput" placeholder="Адрес доставки">
+            <div class="buttons">
+                <button class="button button-primary" id="loginBtnHeader">
+                    <img src="img/user.svg" alt="user" class="button-icon">
+                    <span class="button-text" id="loginBtnText">Войти</span>
+                </button>
+                <button class="button" id="cart-button">
+                    <img src="img/shopping-cart.svg" alt="shopping cart" class="button-icon">
+                    <span class="button-text">Корзина</span>
+                    <span class="cart-badge" id="cart-count" style="display: none;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="breadcrumbs" style="padding: 15px 0; font-size: 14px; color: #8C8C8C; border-bottom: 1px solid #f0f0f0; margin-bottom: 20px; text-align: center;">
+        <a href="index.html" style="color: #1890FF; text-decoration: none;">Главная</a>
+        <span style="margin: 0 8px;">→</span>
+        <span>Арарат</span>
+    </div>
+
+    <!-- ===== КАРТА ===== -->
+    <div class="map-container" style="margin: 20px 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e9e9e9;">
+        <div id="map" style="width: 100%; height: 300px; border: none;"></div>
+        <div style="background: #f8f8f8; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; border-top: 1px solid #e9e9e9;">
+            <span style="font-size: 18px;">📍</span>
+            <input type="text" id="addressInput" placeholder="Введите адрес или кликните по карте" value="Кемерово, ул. Пушкина, 10" style="flex: 2; min-width: 150px; padding: 8px 14px; border: 1px solid #ccc; border-radius: 30px; font-size: 14px; outline: none;">
+            <span id="addressDisplay" style="font-size: 14px; color: #555; background: #fff; padding: 4px 14px; border-radius: 30px; border: 1px dashed #bbb; white-space: nowrap;">📍 Кемерово, ул. Пушкина, 10</span>
         </div>
     </div>
-</header>
-<div class="breadcrumbs" style="padding: 15px 0; font-size: 14px; color: #8C8C8C; border-bottom: 1px solid #f0f0f0; margin-bottom: 20px; text-align: center;">
-    <a href="index.html" style="color: #1890FF; text-decoration: none;">Главная</a>
-    <span style="margin: 0 8px;">→</span>
-    <span>Арарат</span>
-</div>
-	<main class="main">
-		<div class="container">
-			<!-- ===== КАРТА ===== -->
-<div class="map-container" style="margin: 20px 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e9e9e9;">
-    <div id="map" style="width: 100%; height: 250px; border: none;"></div>
-    <div style="background: #f8f8f8; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; border-top: 1px solid #e9e9e9;">
-        <span style="font-size: 18px;">📍</span>
-        <input type="text" id="addressInput" placeholder="Введите адрес или кликните по карте" value="ул. Пушкина, 10" style="flex: 2; min-width: 150px; padding: 8px 14px; border: 1px solid #ccc; border-radius: 30px; font-size: 14px; outline: none;">
-        <span id="addressDisplay" style="font-size: 14px; color: #555; background: #fff; padding: 4px 14px; border-radius: 30px; border: 1px dashed #bbb; white-space: nowrap;">📍 ул. Пушкина, 10</span>
-    </div>
-</div>
 
-<!-- ===== СКРИПТ КАРТЫ ===== -->
-<script src="https://api-maps.yandex.ru/2.1/?apikey=9db0e295-2c84-4670-88d9-af49a26ceb58&lang=ru_RU"></script>
-<script>
-    // ===== ИНТЕРАКТИВНАЯ КАРТА (КЕМЕРОВО) =====
-    const addressInput = document.getElementById('addressInput');
-    const addressDisplay = document.getElementById('addressDisplay');
-    const mainAddressInput = document.querySelector('.input-addres');
+    <!-- ===== СКРИПТ КАРТЫ (рабочий) ===== -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=9db0e295-2c84-4670-88d9-af49a26ceb58&lang=ru_RU"></script>
+    <script>
+        // ==========================================
+        // ИНТЕРАКТИВНАЯ КАРТА (КЕМЕРОВО)
+        // ==========================================
 
-    function updateAddress(value) {
-        const val = value.trim() || 'Адрес не указан';
-        if (addressInput) addressInput.value = value;
-        if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
-        if (mainAddressInput) mainAddressInput.value = value;
-        console.log('📍 Адрес обновлён:', val);
-    }
+        const addressInput = document.getElementById('addressInput');
+        const addressDisplay = document.getElementById('addressDisplay');
+        const mainAddressInput = document.getElementById('mainAddressInput');
 
-    ymaps.ready(function() {
-        var map = new ymaps.Map('map', {
-            center: [55.3549, 86.0877],
-            zoom: 14
-        });
+        function updateAddress(value) {
+            const val = value.trim() || 'Адрес не указан';
+            if (addressInput) addressInput.value = val;
+            if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
+            if (mainAddressInput) mainAddressInput.value = val;
+            console.log('📍 Адрес обновлён:', val);
+        }
 
-        var placemark = new ymaps.Placemark([55.3549, 86.0877], {
-            hintContent: 'Перетащите или кликните по карте',
-            balloonContent: 'Адрес доставки'
-        }, {
-            draggable: true,
-            preset: 'islands#blueCircleDotIcon'
-        });
+        // Синхронизация полей
+        if (addressInput) {
+            addressInput.addEventListener('input', function() {
+                updateAddress(this.value);
+            });
+        }
+        if (mainAddressInput) {
+            mainAddressInput.addEventListener('input', function() {
+                updateAddress(this.value);
+            });
+        }
 
-        map.geoObjects.add(placemark);
+        ymaps.ready(function() {
+            var map = new ymaps.Map('map', {
+                center: [55.3549, 86.0877],
+                zoom: 14,
+                controls: ['zoomControl', 'searchControl']
+            });
 
-        function getAddress(coords) {
-            ymaps.geocode(coords, {
-                results: 1
-            }).then(function(res) {
-                var first = res.geoObjects.get(0);
-                if (first) {
-                    var address = first.getAddressLine() || 'Адрес не найден';
-                    updateAddress(address);
-                    // Обновляем подпись метки
-                    placemark.properties.set({
-                        balloonContent: address,
-                        hintContent: address
+            var placemark = new ymaps.Placemark([55.3549, 86.0877], {
+                hintContent: 'Перетащите или кликните по карте',
+                balloonContent: 'Адрес доставки'
+            }, {
+                draggable: true,
+                preset: 'islands#blueCircleDotIcon'
+            });
+
+            map.geoObjects.add(placemark);
+
+            function getAddressFromCoords(coords) {
+                ymaps.geocode(coords, { results: 1 })
+                    .then(function(res) {
+                        var first = res.geoObjects.get(0);
+                        if (first) {
+                            var address = first.getAddressLine() || 'Адрес не найден';
+                            updateAddress(address);
+                            placemark.properties.set({
+                                balloonContent: address,
+                                hintContent: address
+                            });
+                        } else {
+                            updateAddress('Адрес не определён');
+                        }
+                    })
+                    .catch(function(err) {
+                        console.warn('⚠️ Ошибка геокодирования:', err);
+                        var coordText = coords[0].toFixed(5) + ', ' + coords[1].toFixed(5);
+                        updateAddress(coordText);
                     });
-                } else {
-                    updateAddress('Адрес не определён');
-                }
-            }).catch(function(err) {
-                console.warn('Ошибка геокодирования:', err);
-                updateAddress('Кликните точнее');
+            }
+
+            // Клик по карте
+            map.events.add('click', function(e) {
+                var coords = e.get('coords');
+                placemark.geometry.setCoordinates(coords);
+                getAddressFromCoords(coords);
             });
-        }
 
-        // Клик по карте
-        map.events.add('click', function(e) {
-            var coords = e.get('coords');
-            placemark.geometry.setCoordinates(coords);
-            getAddress(coords);
-        });
-
-        // Конец перетаскивания метки
-        placemark.events.add('dragend', function() {
-            var coords = placemark.geometry.getCoordinates();
-            getAddress(coords);
-        });
-
-        // При загрузке — показать адрес на карте
-        if (addressInput && addressInput.value) {
-            ymaps.geocode(addressInput.value, { results: 1 }).then(function(res) {
-                var first = res.geoObjects.get(0);
-                if (first) {
-                    var coords = first.geometry.getCoordinates();
-                    map.setCenter(coords, 15);
-                    placemark.geometry.setCoordinates(coords);
-                }
+            // Перетаскивание метки
+            placemark.events.add('dragend', function() {
+                var coords = placemark.geometry.getCoordinates();
+                getAddressFromCoords(coords);
             });
-        }
-    });
-</script>
-			<section class="restaurants">
-				<div class="section-heading">
-					<h2 class="section-title">Арарат</h2>
-					<div class="card-info">
-						<div class="raiting">
-							<img src="img/star.svg" alt="rating" class="raiting-star">
-							4.5
-						</div>
-						<div class="price">От 650 ₽</div>
-						<div class="category">Армянская</div>
-					</div>	
-				</div>
-				<div class="cards">
-					<div class="card wow fadeInUp" data-wow-delay="0.2s">
-						<img src="img/ararat/LulaKebab.jpg" class="card-img" alt="Кебаб из телятины">
-						<div class="card-text">
-							<div class="card-heading">
-								<h3 class="card-title card-title-reg">Кебаб из телятины</h3>
-							</div>
-							<div class="card-info">
-								<div class="ingredients">Телятина, специи</div>
-							</div>
-							<div class="card-buttons">
-								<button class="button button-primary">
-									<span class="button-card-text">В корзину</span> 
-									<img src="img/cart.svg" alt="cart" class="button-card-image">
-								</button>
-								<strong class="card-price-bold">550 ₽</strong>
-							</div>	
-						</div>
-					</div>
-					<div class="card wow fadeInUp" data-wow-delay="0.4s">
-						<img src="img/ararat/dolma.webp" class="card-img" alt="Долма">
-						<div class="card-text">
-							<div class="card-heading">
-								<h3 class="card-title card-title-reg">Долма</h3>
-							</div>
-							<div class="card-info">
-								<div class="ingredients">Виноградные листья, фарш, рис</div>
-							</div>
-							<div class="card-buttons">
-								<button class="button button-primary">
-									<span class="button-card-text">В корзину</span> 
-									<img src="img/cart.svg" alt="cart" class="button-card-image">
-								</button>
-								<strong class="card-price-bold">480 ₽</strong>
-							</div>	
-						</div>
-					</div>
-					<div class="card wow fadeInUp" data-wow-delay="0.6s">
-						<img src="img/ararat/hash.webp" class="card-img" alt="Хаш">
-						<div class="card-text">
-							<div class="card-heading">
-								<h3 class="card-title card-title-reg">Хаш</h3>
-							</div>
-							<div class="card-info">
-								<div class="ingredients">Суп из говяжьих ног</div>
-							</div>
-							<div class="card-buttons">
-								<button class="button button-primary">
-									<span class="button-card-text">В корзину</span> 
-									<img src="img/cart.svg" alt="cart" class="button-card-image">
-								</button>
-								<strong class="card-price-bold">600 ₽</strong>
-							</div>	
-						</div>
-					</div>
-					<div class="card wow fadeInUp" data-wow-delay="0.2s">
-						<img src="img/ararat/lavashik.jpg" class="card-img" alt="Лаваш с сыром и зеленью">
-						<div class="card-text">
-							<div class="card-heading">
-								<h3 class="card-title card-title-reg">Лаваш с сыром и зеленью</h3>
-							</div>
-							<div class="card-info">
-								<div class="ingredients">Лаваш, сыр, зелень</div>
-							</div>
-							<div class="card-buttons">
-								<button class="button button-primary">
-									<span class="button-card-text">В корзину</span> 
-									<img src="img/cart.svg" alt="cart" class="button-card-image">
-								</button>
-								<strong class="card-price-bold">350 ₽</strong>
-							</div>	
-						</div>
-					</div>
-					<div class="card wow fadeInUp" data-wow-delay="0.4s">
-						<img src="img/ararat/kuchmachi.jpg" class="card-img" alt="Кучмачи">
-						<div class="card-text">
-							<div class="card-heading">
-								<h3 class="card-title card-title-reg">Кучмачи</h3>
-							</div>
-							<div class="card-info">
-								<div class="ingredients">Потроха, лук, специи</div>
-							</div>
-							<div class="card-buttons">
-								<button class="button button-primary">
-									<span class="button-card-text">В корзину</span> 
-									<img src="img/cart.svg" alt="cart" class="button-card-image">
-								</button>
-								<strong class="card-price-bold">420 ₽</strong>
-							</div>	
-						</div>
-					</div>
-					<div class="card wow fadeInUp" data-wow-delay="0.6s">
-						<img src="img/ararat/pahlava.jpg" class="card-img" alt="Пахлава">
-						<div class="card-text">
-							<div class="card-heading">
-								<h3 class="card-title card-title-reg">Пахлава</h3>
-							</div>
-							<div class="card-info">
-								<div class="ingredients">Десерт из слоёного теста с орехами</div>
-							</div>
-							<div class="card-buttons">
-								<button class="button button-primary">
-									<span class="button-card-text">В корзину</span> 
-									<img src="img/cart.svg" alt="cart" class="button-card-image">
-								</button>
-								<strong class="card-price-bold">300 ₽</strong>
-							</div>	
-						</div>
-					</div>
-				</div>	
-			</section>
-		</div>
-	</main>
 
-	<footer class="footer">
-    <div class="container">
-        <div class="footer-block">
-            <img src="img/logo.svg" alt="logo" class="logo footer-logo">
-            <nav class="footer-nav">
-                <a href="#" class="footer-link">Ресторанам</a>
-                <a href="#" class="footer-link">Курьерам</a>
-                <a href="#" class="footer-link">Пресс-центр</a>
-                <a href="#" class="footer-link">Контакты</a>
-            </nav>
-            <div class="footer-contacts">
-                <a href="mailto:2diffeye@gmail.com" class="footer-link">📧 2diffeye@gmail.com</a>
-                <a href="tel:+79134124440" class="footer-link">📞 +7 (913) 412-44-40</a>
-            </div>
-            <div class="social-links">
-                <a href="https://vk.com/2diffeye" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
+            // Загрузка адреса из поля
+            if (addressInput && addressInput.value) {
+                ymaps.geocode(addressInput.value, { results: 1 })
+                    .then(function(res) {
+                        var first = res.geoObjects.get(0);
+                        if (first) {
+                            var coords = first.geometry.getCoordinates();
+                            map.setCenter(coords, 15);
+                            placemark.geometry.setCoordinates(coords);
+                        }
+                    })
+                    .catch(function() {
+                        console.log('ℹ️ Не удалось найти адрес при загрузке');
+                    });
+            }
+        });
+    </script>
+
+    <main class="main">
+        <div class="container">
+            <section class="restaurants">
+                <div class="section-heading">
+                    <h2 class="section-title">Арарат</h2>
+                    <div class="card-info">
+                        <div class="raiting">
+                            <img src="img/star.svg" alt="rating" class="raiting-star">
+                            4.5
+                        </div>
+                        <div class="price">От 650 ₽</div>
+                        <div class="category">Армянская</div>
+                    </div>  
+                </div>
+                <div class="cards">
+                    <!-- Блюда -->
+                    <div class="card wow fadeInUp" data-wow-delay="0.2s">
+                        <img src="img/ararat/LulaKebab.jpg" class="card-img" alt="Кебаб из телятины">
+                        <div class="card-text">
+                            <div class="card-heading">
+                                <h3 class="card-title card-title-reg">Кебаб из телятины</h3>
+                            </div>
+                            <div class="card-info">
+                                <div class="ingredients">Телятина, специи</div>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="button button-primary">
+                                    <span class="button-card-text">В корзину</span> 
+                                    <img src="img/cart.svg" alt="cart" class="button-card-image">
+                                </button>
+                                <strong class="card-price-bold">550 ₽</strong>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="card wow fadeInUp" data-wow-delay="0.4s">
+                        <img src="img/ararat/dolma.webp" class="card-img" alt="Долма">
+                        <div class="card-text">
+                            <div class="card-heading">
+                                <h3 class="card-title card-title-reg">Долма</h3>
+                            </div>
+                            <div class="card-info">
+                                <div class="ingredients">Виноградные листья, фарш, рис</div>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="button button-primary">
+                                    <span class="button-card-text">В корзину</span> 
+                                    <img src="img/cart.svg" alt="cart" class="button-card-image">
+                                </button>
+                                <strong class="card-price-bold">480 ₽</strong>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="card wow fadeInUp" data-wow-delay="0.6s">
+                        <img src="img/ararat/hash.webp" class="card-img" alt="Хаш">
+                        <div class="card-text">
+                            <div class="card-heading">
+                                <h3 class="card-title card-title-reg">Хаш</h3>
+                            </div>
+                            <div class="card-info">
+                                <div class="ingredients">Суп из говяжьих ног</div>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="button button-primary">
+                                    <span class="button-card-text">В корзину</span> 
+                                    <img src="img/cart.svg" alt="cart" class="button-card-image">
+                                </button>
+                                <strong class="card-price-bold">600 ₽</strong>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="card wow fadeInUp" data-wow-delay="0.2s">
+                        <img src="img/ararat/lavashik.jpg" class="card-img" alt="Лаваш с сыром и зеленью">
+                        <div class="card-text">
+                            <div class="card-heading">
+                                <h3 class="card-title card-title-reg">Лаваш с сыром и зеленью</h3>
+                            </div>
+                            <div class="card-info">
+                                <div class="ingredients">Лаваш, сыр, зелень</div>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="button button-primary">
+                                    <span class="button-card-text">В корзину</span> 
+                                    <img src="img/cart.svg" alt="cart" class="button-card-image">
+                                </button>
+                                <strong class="card-price-bold">350 ₽</strong>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="card wow fadeInUp" data-wow-delay="0.4s">
+                        <img src="img/ararat/kuchmachi.jpg" class="card-img" alt="Кучмачи">
+                        <div class="card-text">
+                            <div class="card-heading">
+                                <h3 class="card-title card-title-reg">Кучмачи</h3>
+                            </div>
+                            <div class="card-info">
+                                <div class="ingredients">Потроха, лук, специи</div>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="button button-primary">
+                                    <span class="button-card-text">В корзину</span> 
+                                    <img src="img/cart.svg" alt="cart" class="button-card-image">
+                                </button>
+                                <strong class="card-price-bold">420 ₽</strong>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="card wow fadeInUp" data-wow-delay="0.6s">
+                        <img src="img/ararat/pahlava.jpg" class="card-img" alt="Пахлава">
+                        <div class="card-text">
+                            <div class="card-heading">
+                                <h3 class="card-title card-title-reg">Пахлава</h3>
+                            </div>
+                            <div class="card-info">
+                                <div class="ingredients">Десерт из слоёного теста с орехами</div>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="button button-primary">
+                                    <span class="button-card-text">В корзину</span> 
+                                    <img src="img/cart.svg" alt="cart" class="button-card-image">
+                                </button>
+                                <strong class="card-price-bold">300 ₽</strong>
+                            </div>  
+                        </div>
+                    </div>
+                </div>  
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-block">
+                <img src="img/logo.svg" alt="logo" class="logo footer-logo">
+                <nav class="footer-nav">
+                    <a href="#" class="footer-link">Ресторанам</a>
+                    <a href="#" class="footer-link">Курьерам</a>
+                    <a href="#" class="footer-link">Пресс-центр</a>
+                    <a href="#" class="footer-link">Контакты</a>
+                </nav>
+                <div class="footer-contacts">
+                    <a href="mailto:2diffeye@gmail.com" class="footer-link">📧 2diffeye@gmail.com</a>
+                    <a href="tel:+79134124440" class="footer-link">📞 +7 (913) 412-44-40</a>
+                </div>
+                <div class="social-links">
+                    <a href="https://vk.com/2diffeye" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
+                </div>
             </div>
         </div>
-    </div>
     </footer>
 
     <!-- ===== КОРЗИНА ===== -->
@@ -323,7 +347,7 @@
 
     <script src="js/main.js"></script>
 
-    <!-- ===== МОДАЛКА ВХОДА ===== -->
+    <!-- ===== МОДАЛКИ ===== -->
     <div class="modal-login" id="loginModal">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -352,7 +376,6 @@
         </div>
     </div>
 
-    <!-- ===== МОДАЛКА РЕГИСТРАЦИИ ===== -->
     <div class="modal-login" id="registerModal" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -365,10 +388,10 @@
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">Имя</label>
                         <input type="text" id="regName" placeholder="Введите имя" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
                     </div>
-					<div style="margin-bottom: 15px;">
-    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Телефон</label>
-    <input type="tel" id="regPhone" placeholder="+7 (999) 123-45-67" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
-</div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Телефон</label>
+                        <input type="tel" id="regPhone" placeholder="+7 (999) 123-45-67" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
+                    </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">Email</label>
                         <input type="email" id="regEmail" placeholder="Введите email" style="width: 100%; padding: 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 16px;">
