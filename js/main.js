@@ -36,7 +36,6 @@ function getCurrentRestaurant() {
     return titleEl ? titleEl.textContent.trim() : 'Неизвестный ресторан';
 }
 
-// ===== ОТКРЫТИЕ/ЗАКРЫТИЕ КОРЗИНЫ =====
 function toggleModal() {
     modal.classList.toggle("is-open");
     if (modal.classList.contains("is-open")) {
@@ -57,7 +56,6 @@ if (close) {
     });
 }
 
-// Закрытие через кнопку "Отмена"
 if (cancelButton) {
     cancelButton.addEventListener("click", function(e) {
         e.preventDefault();
@@ -67,7 +65,6 @@ if (cancelButton) {
     });
 }
 
-// Закрытие по клику вне модалки
 if (modal) {
     modal.addEventListener("click", function(e) {
         if (e.target === modal) {
@@ -76,23 +73,8 @@ if (modal) {
     });
 }
 
-// Закрытие по Escape
 document.addEventListener("keydown", function(e) {
     if (e.key === "Escape" && modal && modal.classList.contains('is-open')) {
-        toggleModal();
-    }
-});
-
-// Закрытие корзины по клику вне модалки
-modal.addEventListener("click", function(e) {
-    if (e.target === modal) {
-        toggleModal();
-    }
-});
-
-// Закрытие корзины по Escape
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape" && modal.classList.contains("is-open")) {
         toggleModal();
     }
 });
@@ -355,7 +337,7 @@ if (searchInput) {
 loadCart();
 
 // ==========================================
-// АВТОРИЗАЦИЯ
+// АВТОРИЗАЦИЯ (ПОСТГРЕС)
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -439,18 +421,25 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const email = prompt('📧 Введите ваш email:');
             if (email) {
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                const user = users.find(u => u.email === email);
-                if (user) {
-                    alert(`🔑 Ваш пароль: ${user.password}`);
-                } else {
-                    alert('❌ Пользователь с таким email не найден');
-                }
+                fetch('/api/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert(`🔑 Ваш пароль: ${data.password}`);
+                    } else {
+                        alert('❌ ' + data.message);
+                    }
+                })
+                .catch(() => alert('❌ Ошибка сервера'));
             }
         });
     }
 
-    // ===== РЕГИСТРАЦИЯ =====
+    // ===== РЕГИСТРАЦИЯ (POSTGRES) =====
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
@@ -470,21 +459,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (password !== passwordRepeat) { alert('❌ Пароли не совпадают'); return; }
             if (!agree) { alert('❌ Подтвердите согласие на обработку данных'); return; }
 
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users.find(u => u.email === email)) {
-                alert('❌ Пользователь с таким email уже существует');
-                return;
-            }
-
-            users.push({ name, email, password });
-            localStorage.setItem('users', JSON.stringify(users));
-
-            alert('✅ Регистрация успешна! Теперь войдите.');
-            showLogin();
+            // Отправляем на сервер
+            fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('✅ Регистрация успешна! Теперь войдите.');
+                    showLogin();
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            })
+            .catch(() => alert('❌ Ошибка сервера'));
         });
     }
 
-    // ===== ВХОД =====
+    // ===== ВХОД (POSTGRES) =====
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -494,25 +488,44 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                alert(`✅ Добро пожаловать, ${user.name}!`);
-                closeAll();
-                if (loginBtnText) {
-                    loginBtnText.textContent = user.name;
+            // Отправляем на сервер
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    // Сохраняем пользователя в localStorage
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    alert(`✅ Добро пожаловать, ${data.user.name}!`);
+                    closeAll();
+                    if (loginBtnText) {
+                        loginBtnText.textContent = data.user.name;
+                    }
+                    if (loginBtn) {
+                        loginBtn.style.pointerEvents = 'none';
+                        loginBtn.style.opacity = '0.8';
+                    }
+                    // Обновляем страницу
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    alert('❌ ' + data.message);
                 }
-                if (loginBtn) {
-                    loginBtn.style.pointerEvents = 'none';
-                    loginBtn.style.opacity = '0.8';
-                }
-                // Обновляем страницу, чтобы применить изменения
-                setTimeout(() => location.reload(), 500);
-            } else {
-                alert('❌ Неверный email или пароль');
-            }
+            })
+            .catch(() => alert('❌ Ошибка сервера'));
         });
+    }
+
+    // ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser && loginBtnText) {
+        loginBtnText.textContent = currentUser.name;
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'none';
+            loginBtn.style.opacity = '0.8';
+        }
+        console.log(`👋 Привет, ${currentUser.name}!`);
     }
 });
