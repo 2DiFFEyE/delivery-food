@@ -58,52 +58,67 @@
         if (addressInput) addressInput.value = value;
         if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
         if (mainAddressInput) mainAddressInput.value = value;
-    }
-
-    if (addressInput) {
-        addressInput.addEventListener('input', function() { updateAddress(this.value); });
-    }
-    if (mainAddressInput) {
-        mainAddressInput.addEventListener('input', function() { updateAddress(this.value); });
+        console.log('📍 Адрес обновлён:', val);
     }
 
     ymaps.ready(function() {
         var map = new ymaps.Map('map', {
             center: [55.3549, 86.0877],
-            zoom: 13
+            zoom: 14
         });
 
         var placemark = new ymaps.Placemark([55.3549, 86.0877], {
-            hintContent: 'Выберите адрес',
+            hintContent: 'Перетащите или кликните по карте',
             balloonContent: 'Адрес доставки'
-        }, { draggable: true });
+        }, {
+            draggable: true,
+            preset: 'islands#blueCircleDotIcon'
+        });
 
         map.geoObjects.add(placemark);
 
         function getAddress(coords) {
-            ymaps.geocode(coords).then(function(res) {
+            ymaps.geocode(coords, {
+                results: 1
+            }).then(function(res) {
                 var first = res.geoObjects.get(0);
-                var address = first ? first.getAddressLine() : 'Адрес не найден';
-                updateAddress(address);
+                if (first) {
+                    var address = first.getAddressLine() || 'Адрес не найден';
+                    updateAddress(address);
+                    // Обновляем подпись метки
+                    placemark.properties.set({
+                        balloonContent: address,
+                        hintContent: address
+                    });
+                } else {
+                    updateAddress('Адрес не определён');
+                }
+            }).catch(function(err) {
+                console.warn('Ошибка геокодирования:', err);
+                updateAddress('Кликните точнее');
             });
         }
 
+        // Клик по карте
         map.events.add('click', function(e) {
             var coords = e.get('coords');
             placemark.geometry.setCoordinates(coords);
             getAddress(coords);
         });
 
+        // Конец перетаскивания метки
         placemark.events.add('dragend', function() {
-            getAddress(placemark.geometry.getCoordinates());
+            var coords = placemark.geometry.getCoordinates();
+            getAddress(coords);
         });
 
+        // При загрузке — показать адрес на карте
         if (addressInput && addressInput.value) {
-            ymaps.geocode(addressInput.value).then(function(res) {
+            ymaps.geocode(addressInput.value, { results: 1 }).then(function(res) {
                 var first = res.geoObjects.get(0);
                 if (first) {
                     var coords = first.geometry.getCoordinates();
-                    map.setCenter(coords, 14);
+                    map.setCenter(coords, 15);
                     placemark.geometry.setCoordinates(coords);
                 }
             });
