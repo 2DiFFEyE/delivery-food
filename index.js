@@ -109,8 +109,6 @@ async function sendMessage(chatId, text) {
     }
 }
 
-// 🚀 Запускаем сервер
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);
-    console.log(`🌐 Открывай: http://localhost:${PORT}`);
 });
