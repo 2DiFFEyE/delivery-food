@@ -307,107 +307,90 @@ loadCart();
 new WOW().init();
 
 // ==========================================
-// ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ МОДАЛОК
+// АВТОРИЗАЦИЯ (ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ)
 // ==========================================
 
-(function() {
-    console.log('✅ Скрипт модалок запущен!');
+// Ждём загрузки страницы
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM загружен, запускаем авторизацию');
 
-    // Находим элементы
+    // Находим все элементы
+    const loginBtn = document.getElementById('loginBtnHeader');
     const loginModal = document.getElementById('loginModal');
     const registerModal = document.getElementById('registerModal');
     const closeLogin = document.getElementById('closeLogin');
     const closeRegister = document.getElementById('closeRegister');
     const openRegisterBtn = document.getElementById('openRegisterBtn');
     const openLoginFromRegister = document.getElementById('openLoginFromRegister');
-    const loginBtnHeader = document.getElementById('loginBtnHeader');
-    const forgotPasswordLink = document.getElementById('forgotPassword');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
+    const forgotPassword = document.getElementById('forgotPassword');
 
-    console.log('loginModal:', loginModal);
-    console.log('loginBtnHeader:', loginBtnHeader);
-
-    // ===== ОТКРЫТЬ ВХОД =====
-    function openLogin() {
+    // Функции
+    function showLogin() {
         if (loginModal) loginModal.style.display = 'flex';
         if (registerModal) registerModal.style.display = 'none';
-        console.log('✅ Открыт вход');
+        console.log('🔓 Открыт вход');
     }
 
-    // ===== ОТКРЫТЬ РЕГИСТРАЦИЮ =====
-    function openRegister() {
+    function showRegister() {
         if (registerModal) registerModal.style.display = 'flex';
         if (loginModal) loginModal.style.display = 'none';
-        console.log('✅ Открыта регистрация');
+        console.log('📝 Открыта регистрация');
     }
 
-    // ===== ЗАКРЫТЬ ВСЁ =====
     function closeAll() {
         if (loginModal) loginModal.style.display = 'none';
         if (registerModal) registerModal.style.display = 'none';
-        console.log('✅ Закрыто');
+        console.log('🔒 Модалки закрыты');
     }
 
-    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ =====
-    if (loginBtnHeader) {
-        loginBtnHeader.addEventListener('click', function(e) {
+    // Кнопка "Войти" в шапке
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation();
-            console.log('👆 Нажата кнопка Войти');
-            openLogin();
+            showLogin();
         });
+        console.log('✅ Кнопка "Войти" привязана');
     } else {
-        console.log('❌ Кнопка loginBtnHeader не найдена!');
+        console.log('❌ Кнопка "Войти" не найдена!');
     }
 
-    // ===== КРЕСТИКИ =====
-    if (closeLogin) {
-        closeLogin.addEventListener('click', function(e) {
-            e.preventDefault();
-            closeAll();
-        });
-    }
-    if (closeRegister) {
-        closeRegister.addEventListener('click', function(e) {
-            e.preventDefault();
-            closeAll();
-        });
-    }
+    // Крестики
+    if (closeLogin) closeLogin.addEventListener('click', closeAll);
+    if (closeRegister) closeRegister.addEventListener('click', closeAll);
 
-    // ===== ПЕРЕКЛЮЧЕНИЕ НА РЕГИСТРАЦИЮ =====
+    // Переключение на регистрацию
     if (openRegisterBtn) {
         openRegisterBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            openRegister();
+            showRegister();
         });
     }
 
-    // ===== ПЕРЕКЛЮЧЕНИЕ НА ВХОД =====
+    // Переключение на вход
     if (openLoginFromRegister) {
         openLoginFromRegister.addEventListener('click', function(e) {
             e.preventDefault();
-            openLogin();
+            showLogin();
         });
     }
 
-    // ===== ЗАКРЫТИЕ ПО КЛИКУ ВНЕ МОДАЛКИ =====
+    // Закрытие по клику вне модалки
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('modal-login')) {
             closeAll();
         }
     });
 
-    // ===== ВОССТАНОВЛЕНИЕ ПАРОЛЯ =====
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', function(e) {
+    // Восстановление пароля
+    if (forgotPassword) {
+        forgotPassword.addEventListener('click', function(e) {
             e.preventDefault();
-            const email = prompt('Введите email для восстановления пароля:');
+            const email = prompt('📧 Введите ваш email:');
             if (email) {
                 const users = JSON.parse(localStorage.getItem('users')) || [];
                 const user = users.find(u => u.email === email);
                 if (user) {
-                    alert(`Ваш пароль: ${user.password}`);
+                    alert(`🔑 Ваш пароль: ${user.password}`);
                 } else {
                     alert('❌ Пользователь с таким email не найден');
                 }
@@ -416,10 +399,11 @@ new WOW().init();
     }
 
     // ===== РЕГИСТРАЦИЯ =====
+    const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('📝 Регистрация...');
+            console.log('📝 Отправка регистрации...');
 
             const name = document.getElementById('regName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
@@ -427,16 +411,18 @@ new WOW().init();
             const passwordRepeat = document.getElementById('regPasswordRepeat').value;
             const agree = document.getElementById('regAgree').checked;
 
-            if (!name) { alert('Введите имя'); return; }
-            if (!email) { alert('Введите email'); return; }
-            if (!email.includes('@')) { alert('Введите корректный email'); return; }
-            if (password.length < 6) { alert('Пароль должен быть минимум 6 символов'); return; }
-            if (password !== passwordRepeat) { alert('Пароли не совпадают'); return; }
-            if (!agree) { alert('Подтвердите согласие на обработку данных'); return; }
+            // Проверки
+            if (!name) { alert('❌ Введите имя'); return; }
+            if (!email) { alert('❌ Введите email'); return; }
+            if (!email.includes('@')) { alert('❌ Введите корректный email'); return; }
+            if (password.length < 6) { alert('❌ Пароль должен быть минимум 6 символов'); return; }
+            if (password !== passwordRepeat) { alert('❌ Пароли не совпадают'); return; }
+            if (!agree) { alert('❌ Подтвердите согласие на обработку данных'); return; }
 
+            // Сохраняем
             const users = JSON.parse(localStorage.getItem('users')) || [];
             if (users.find(u => u.email === email)) {
-                alert('Пользователь с таким email уже существует');
+                alert('❌ Пользователь с таким email уже существует');
                 return;
             }
 
@@ -444,15 +430,16 @@ new WOW().init();
             localStorage.setItem('users', JSON.stringify(users));
 
             alert('✅ Регистрация успешна! Теперь войдите.');
-            openLogin();
+            showLogin();
         });
     }
 
     // ===== ВХОД =====
+    const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('🔑 Вход...');
+            console.log('🔑 Отправка входа...');
 
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -472,12 +459,11 @@ new WOW().init();
         });
     }
 
-    // ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
+    // ===== Проверка авторизации при загрузке =====
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
         const btn = document.getElementById('loginBtnText');
         if (btn) btn.textContent = currentUser.name;
+        console.log(`👋 Привет, ${currentUser.name}!`);
     }
-
-    console.log('✅ Все обработчики установлены!');
-})();
+});
