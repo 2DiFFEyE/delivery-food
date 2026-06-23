@@ -46,8 +46,42 @@ function toggleModal() {
 }
 
 cartButton.addEventListener("click", toggleModal);
-close.addEventListener("click", toggleModal);
-cancelButton.addEventListener("click", toggleModal);
+
+// Закрытие корзины через крестик
+if (close) {
+    close.addEventListener("click", function(e) {
+        e.preventDefault();
+        if (modal.classList.contains('is-open')) {
+            toggleModal();
+        }
+    });
+}
+
+// Закрытие через кнопку "Отмена"
+if (cancelButton) {
+    cancelButton.addEventListener("click", function(e) {
+        e.preventDefault();
+        if (modal.classList.contains('is-open')) {
+            toggleModal();
+        }
+    });
+}
+
+// Закрытие по клику вне модалки
+if (modal) {
+    modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+            toggleModal();
+        }
+    });
+}
+
+// Закрытие по Escape
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && modal && modal.classList.contains('is-open')) {
+        toggleModal();
+    }
+});
 
 // Закрытие корзины по клику вне модалки
 modal.addEventListener("click", function(e) {
