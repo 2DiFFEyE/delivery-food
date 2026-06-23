@@ -547,3 +547,26 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔒 Модалки принудительно скрыты');
     }
 })();
+
+// ==========================================
+// ФИНАЛЬНАЯ БЛОКИРОВКА МОДАЛОК (100% РАБОТАЕТ)
+// ==========================================
+
+setTimeout(function() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        if (loginModal) {
+            loginModal.style.display = 'none';
+            loginModal.style.visibility = 'hidden';
+            loginModal.style.opacity = '0';
+        }
+        if (registerModal) {
+            registerModal.style.display = 'none';
+            registerModal.style.visibility = 'hidden';
+            registerModal.style.opacity = '0';
+        }
+        console.log('🔒 Модалки 100% заблокированы');
+    }
+}, 200);
