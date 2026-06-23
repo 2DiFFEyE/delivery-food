@@ -316,131 +316,89 @@ loadCart(); // Восстанавливаем корзину при загруз
 new WOW().init();
 
 // ==========================================
-// РЕГИСТРАЦИЯ И ВХОД
+// МОДАЛКИ ВХОДА / РЕГИСТРАЦИИ (РАБОЧАЯ ВЕРСИЯ)
 // ==========================================
 
-// Получаем элементы
-const loginBtn = document.querySelector('.button-primary .button-text');
+// Находим все элементы
 const loginModal = document.getElementById('loginModal');
 const registerModal = document.getElementById('registerModal');
 const closeLogin = document.getElementById('closeLogin');
 const closeRegister = document.getElementById('closeRegister');
 const openRegisterBtn = document.getElementById('openRegisterBtn');
 const openLoginFromRegister = document.getElementById('openLoginFromRegister');
+const forgotPasswordLink = document.getElementById('forgotPassword');
+const loginBtnHeader = document.querySelector('.button-primary .button-text');
 
-// Открыть вход
-function openLogin() {
-    loginModal.style.display = 'flex';
-    registerModal.style.display = 'none';
+// ===== ОТКРЫТИЕ ВХОДА =====
+function openLoginModal() {
+    if (loginModal) loginModal.style.display = 'flex';
+    if (registerModal) registerModal.style.display = 'none';
 }
 
-// Открыть регистрацию
-function openRegister() {
-    registerModal.style.display = 'flex';
-    loginModal.style.display = 'none';
+// ===== ОТКРЫТИЕ РЕГИСТРАЦИИ =====
+function openRegisterModal() {
+    if (registerModal) registerModal.style.display = 'flex';
+    if (loginModal) loginModal.style.display = 'none';
 }
 
-// Закрыть всё
+// ===== ЗАКРЫТИЕ ВСЕХ МОДАЛОК =====
 function closeAllModals() {
-    loginModal.style.display = 'none';
-    registerModal.style.display = 'none';
+    if (loginModal) loginModal.style.display = 'none';
+    if (registerModal) registerModal.style.display = 'none';
 }
 
-// Кнопка "Войти" в шапке
-if (loginBtn) {
-    loginBtn.closest('.button-primary')?.addEventListener('click', openLogin);
+// ===== КНОПКА "ВОЙТИ" В ШАПКЕ =====
+if (loginBtnHeader) {
+    loginBtnHeader.closest('.button-primary')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        openLoginModal();
+    });
 }
 
-// Закрытие
-if (closeLogin) closeLogin.addEventListener('click', closeAllModals);
-if (closeRegister) closeRegister.addEventListener('click', closeAllModals);
+// ===== КРЕСТИКИ =====
+if (closeLogin) {
+    closeLogin.addEventListener('click', closeAllModals);
+}
+if (closeRegister) {
+    closeRegister.addEventListener('click', closeAllModals);
+}
 
-// Переключение между модалками
-if (openRegisterBtn) openRegisterBtn.addEventListener('click', openRegister);
-if (openLoginFromRegister) openLoginFromRegister.addEventListener('click', openLogin);
+// ===== ПЕРЕКЛЮЧЕНИЕ НА РЕГИСТРАЦИЮ =====
+if (openRegisterBtn) {
+    openRegisterBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openRegisterModal();
+    });
+}
 
-// Закрытие по клику вне модалки
+// ===== ПЕРЕКЛЮЧЕНИЕ НА ВХОД =====
+if (openLoginFromRegister) {
+    openLoginFromRegister.addEventListener('click', function(e) {
+        e.preventDefault();
+        openLoginModal();
+    });
+}
+
+// ===== ВОССТАНОВЛЕНИЕ ПАРОЛЯ =====
+if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        const email = prompt('Введите email для восстановления пароля:');
+        if (email) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email);
+            if (user) {
+                alert(`Ваш пароль: ${user.password}`);
+            } else {
+                alert('❌ Пользователь с таким email не найден');
+            }
+        }
+    });
+}
+
+// ===== ЗАКРЫТИЕ ПО КЛИКУ ВНЕ МОДАЛКИ =====
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal-login')) {
         closeAllModals();
-    }
-});
-
-// ---------- РЕГИСТРАЦИЯ ----------
-document.getElementById('registerForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const password = document.getElementById('regPassword').value;
-    const passwordRepeat = document.getElementById('regPasswordRepeat').value;
-    const agree = document.getElementById('regAgree').checked;
-
-    // Проверки
-    if (!name) { alert('Введите имя'); return; }
-    if (!email) { alert('Введите email'); return; }
-    if (!email.includes('@')) { alert('Введите корректный email'); return; }
-    if (password.length < 6) { alert('Пароль должен быть минимум 6 символов'); return; }
-    if (password !== passwordRepeat) { alert('Пароли не совпадают'); return; }
-    if (!agree) { alert('Подтвердите согласие на обработку данных'); return; }
-
-    // Проверяем, есть ли пользователь
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    if (users.find(u => u.email === email)) {
-        alert('Пользователь с таким email уже существует');
-        return;
-    }
-
-    // Сохраняем
-    users.push({ name, email, password });
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    alert('✅ Регистрация успешна! Теперь войдите.');
-    openLogin();
-});
-
-// ---------- ВХОД ----------
-document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.email === email && u.password === password);
-
-    if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        alert(`✅ Добро пожаловать, ${user.name}!`);
-        closeAllModals();
-        // Меняем кнопку "Войти" на имя пользователя
-        const btn = document.querySelector('.button-primary .button-text');
-        if (btn) btn.textContent = user.name;
-    } else {
-        alert('❌ Неверный email или пароль');
-    }
-});
-
-// ---------- ВОССТАНОВЛЕНИЕ ПАРОЛЯ ----------
-document.getElementById('forgotPassword')?.addEventListener('click', function(e) {
-    e.preventDefault();
-    const email = prompt('Введите email для восстановления пароля:');
-    if (email) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.email === email);
-        if (user) {
-            alert(`Ваш пароль: ${user.password}`);
-        } else {
-            alert('Пользователь с таким email не найден');
-        }
-    }
-});
-
-// ---------- ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ ----------
-document.addEventListener('DOMContentLoaded', function() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        const btn = document.querySelector('.button-primary .button-text');
-        if (btn) btn.textContent = currentUser.name;
     }
 });
