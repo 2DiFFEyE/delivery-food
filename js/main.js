@@ -1,4 +1,6 @@
-// main.js – корзина с localStorage и группировкой по ресторанам
+// ==========================================
+// ОСНОВНАЯ ЛОГИКА КОРЗИНЫ
+// ==========================================
 
 const cartButton = document.querySelector("#cart-button");
 const modal = document.querySelector(".modal");
@@ -11,7 +13,6 @@ const filterSelect = document.querySelector("#restaurant-filter");
 
 let cart = [];
 
-// ---------- Работа с localStorage ----------
 function saveCart() {
   try {
     localStorage.setItem('deliveryCart', JSON.stringify(cart));
@@ -25,7 +26,6 @@ function loadCart() {
     const data = localStorage.getItem('deliveryCart');
     if (data) {
       cart = JSON.parse(data);
-      // Убедимся, что все элементы имеют корректные поля (на случай старых версий)
       cart = cart.filter(item => item.name && typeof item.price === 'number' && typeof item.quantity === 'number' && item.restaurant);
     } else {
       cart = [];
@@ -33,39 +33,29 @@ function loadCart() {
   } catch (e) {
     cart = [];
   }
-  // Обновляем фильтр и рендерим, если модалка открыта
   if (modal.classList.contains('is-open')) {
     updateFilterOptions();
     renderCart();
   }
 }
 
-// ---------- Определяем текущий ресторан ----------
 function getCurrentRestaurant() {
   const titleEl = document.querySelector('.section-title');
   return titleEl ? titleEl.textContent.trim() : 'Неизвестный ресторан';
 }
 
-// ---------- Открытие/закрытие модалки ----------
 function toggleModal() {
-    modal.classList.toggle("is-open");
-    if (modal.classList.contains("is-open")) {
-        // Блокируем скролл на телефоне
-        if (window.innerWidth <= 578) {
-            document.body.style.overflow = 'hidden';
-        }
-        updateFilterOptions();
-        renderCart();
-    } else {
-        document.body.style.overflow = '';
-    }
+  modal.classList.toggle("is-open");
+  if (modal.classList.contains("is-open")) {
+    updateFilterOptions();
+    renderCart();
+  }
 }
 
 cartButton.addEventListener("click", toggleModal);
 close.addEventListener("click", toggleModal);
 cancelButton.addEventListener("click", toggleModal);
 
-// ---------- Работа с корзиной ----------
 function addToCart(name, price, restaurant) {
   const existing = cart.find(item => item.name === name && item.price === price && item.restaurant === restaurant);
   if (existing) {
@@ -106,13 +96,11 @@ function clearCart() {
   }
 }
 
-// ---------- Получение уникальных ресторанов ----------
 function getUniqueRestaurants() {
   const restaurants = cart.map(item => item.restaurant);
   return [...new Set(restaurants)];
 }
 
-// ---------- Обновление выпадающего фильтра ----------
 function updateFilterOptions() {
   if (!filterSelect) return;
   const currentValue = filterSelect.value;
@@ -125,7 +113,6 @@ function updateFilterOptions() {
   filterSelect.innerHTML = options;
 }
 
-// ---------- Рендеринг корзины с группировкой и фильтром ----------
 function renderCart() {
   if (cart.length === 0) {
     modalBody.innerHTML = `<p style="text-align: center; color: #888; padding: 20px 0;">Корзина пуста</p>`;
@@ -145,7 +132,6 @@ function renderCart() {
     return;
   }
 
-  // Группировка по ресторану
   const groups = {};
   filteredCart.forEach(item => {
     if (!groups[item.restaurant]) groups[item.restaurant] = [];
@@ -178,7 +164,6 @@ function renderCart() {
   modalBody.innerHTML = html;
   modalPricetag.textContent = total + " ₽";
 
-  // Обработчики для кнопок +/-
   modalBody.querySelectorAll('.counter-button').forEach(btn => {
     btn.addEventListener('click', function(e) {
       const foodRow = this.closest('.food-row');
@@ -195,7 +180,6 @@ function renderCart() {
   });
 }
 
-// ---------- Обработчик кнопок "В корзину" (делегирование) ----------
 document.addEventListener('click', function(e) {
   const target = e.target.closest('.button-primary');
   if (target && target.querySelector('.button-card-text') && 
@@ -210,14 +194,11 @@ document.addEventListener('click', function(e) {
       const restaurant = getCurrentRestaurant();
       if (!isNaN(price)) {
         addToCart(name, price, restaurant);
-        // Опционально: короткое уведомление
-        // alert(`Добавлено: ${name} (${restaurant})`);
       }
     }
   }
 });
 
-// ---------- Фильтр по ресторану ----------
 if (filterSelect) {
   filterSelect.addEventListener('change', function() {
     if (modal.classList.contains('is-open')) {
@@ -226,7 +207,6 @@ if (filterSelect) {
   });
 }
 
-// ---------- Оформление заказа ----------
 if (orderButton) {
   orderButton.addEventListener('click', function(e) {
     e.preventDefault();
@@ -236,24 +216,34 @@ if (orderButton) {
       return;
     }
 
-    // Формируем текст заказа
     let itemsText = '';
     let total = 0;
+    
+    const groups = {};
     cart.forEach(item => {
-      itemsText += `${item.name} x${item.quantity} - ${item.price * item.quantity} ₽\n`;
-      total += item.price * item.quantity;
+      if (!groups[item.restaurant]) groups[item.restaurant] = [];
+      groups[item.restaurant].push(item);
     });
 
-    // Данные для отправки
+    for (const [restaurant, items] of Object.entries(groups)) {
+      itemsText += `\n🍽️ **${restaurant}**\n`;
+      items.forEach(item => {
+        itemsText += `  • ${item.name} x${item.quantity} - ${item.price * item.quantity} ₽\n`;
+        total += item.price * item.quantity;
+      });
+    }
+
+    const addressInput = document.querySelector('.input-addres');
+    const address = addressInput ? addressInput.value : 'Адрес не указан';
+
     const orderData = {
       name: 'Клиент с сайта',
       phone: '+7 (999) 123-45-67',
-      address: 'ул. Пушкина, 10',
+      address: address,
       items: itemsText,
       total: total
     };
 
-    // Отправляем на сервер
     fetch('/order', {
       method: 'POST',
       headers: {
@@ -278,48 +268,58 @@ if (orderButton) {
   });
 }
 
-// ---------- ПОИСК НА ГЛАВНОЙ СТРАНИЦЕ ----------
 const searchInput = document.querySelector('.input-search');
 if (searchInput) {
   searchInput.addEventListener('input', function() {
     const query = this.value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.card'); // все карточки ресторанов
+    const cards = document.querySelectorAll('.card');
+    const noResultMsg = document.querySelector('.no-result');
 
     let hasVisible = false;
-    cards.forEach(card => {
-      const title = card.querySelector('.card-title');
-      const category = card.querySelector('.category');
-      let match = false;
 
-      if (title && title.textContent.toLowerCase().includes(query)) {
-        match = true;
-      }
-      if (category && category.textContent.toLowerCase().includes(query)) {
-        match = true;
-      }
+    cards.forEach(card => {
+      const title = card.querySelector('.card-title')?.textContent?.toLowerCase() || '';
+      const category = card.querySelector('.category')?.textContent?.toLowerCase() || '';
+      const tag = card.querySelector('.card-tag')?.textContent?.toLowerCase() || '';
+      const rating = card.querySelector('.raiting')?.textContent?.toLowerCase() || '';
+      const price = card.querySelector('.price')?.textContent?.toLowerCase() || '';
+
+      const match = 
+        title.includes(query) ||
+        category.includes(query) ||
+        tag.includes(query) ||
+        rating.includes(query) ||
+        price.includes(query);
 
       card.style.display = match ? '' : 'none';
       if (match) hasVisible = true;
     });
 
-    // Опционально: показать сообщение, если ничего не найдено
-    const noResultMsg = document.querySelector('.no-result');
     if (noResultMsg) {
       noResultMsg.style.display = hasVisible ? 'none' : 'block';
     } else if (!hasVisible) {
+      const cardsContainer = document.querySelector('.cards');
+      if (cardsContainer && !document.querySelector('.no-result-dynamic')) {
+        const msg = document.createElement('div');
+        msg.className = 'no-result no-result-dynamic';
+        msg.style.cssText = 'display: block; text-align: center; padding: 30px 0; font-size: 18px; color: #888; width: 100%;';
+        msg.textContent = '😕 Ничего не найдено. Попробуйте изменить запрос.';
+        cardsContainer.appendChild(msg);
+      }
+    } else {
+      const dynamicMsg = document.querySelector('.no-result-dynamic');
+      if (dynamicMsg) dynamicMsg.remove();
     }
   });
 }
 
-// ---------- Инициализация ----------
-loadCart(); // Восстанавливаем корзину при загрузке
+loadCart();
 new WOW().init();
 
 // ==========================================
-// МОДАЛКИ ВХОДА / РЕГИСТРАЦИИ (РАБОЧАЯ ВЕРСИЯ)
+// МОДАЛКИ ВХОДА И РЕГИСТРАЦИИ
 // ==========================================
 
-// Находим все элементы
 const loginModal = document.getElementById('loginModal');
 const registerModal = document.getElementById('registerModal');
 const closeLogin = document.getElementById('closeLogin');
@@ -329,25 +329,22 @@ const openLoginFromRegister = document.getElementById('openLoginFromRegister');
 const forgotPasswordLink = document.getElementById('forgotPassword');
 const loginBtnHeader = document.querySelector('.button-primary .button-text');
 
-// ===== ОТКРЫТИЕ ВХОДА =====
 function openLoginModal() {
     if (loginModal) loginModal.style.display = 'flex';
     if (registerModal) registerModal.style.display = 'none';
 }
 
-// ===== ОТКРЫТИЕ РЕГИСТРАЦИИ =====
 function openRegisterModal() {
     if (registerModal) registerModal.style.display = 'flex';
     if (loginModal) loginModal.style.display = 'none';
 }
 
-// ===== ЗАКРЫТИЕ ВСЕХ МОДАЛОК =====
 function closeAllModals() {
     if (loginModal) loginModal.style.display = 'none';
     if (registerModal) registerModal.style.display = 'none';
 }
 
-// ===== КНОПКА "ВОЙТИ" В ШАПКЕ =====
+// Кнопка "Войти" в шапке
 if (loginBtnHeader) {
     loginBtnHeader.closest('.button-primary')?.addEventListener('click', function(e) {
         e.preventDefault();
@@ -355,15 +352,11 @@ if (loginBtnHeader) {
     });
 }
 
-// ===== КРЕСТИКИ =====
-if (closeLogin) {
-    closeLogin.addEventListener('click', closeAllModals);
-}
-if (closeRegister) {
-    closeRegister.addEventListener('click', closeAllModals);
-}
+// Крестики
+if (closeLogin) closeLogin.addEventListener('click', closeAllModals);
+if (closeRegister) closeRegister.addEventListener('click', closeAllModals);
 
-// ===== ПЕРЕКЛЮЧЕНИЕ НА РЕГИСТРАЦИЮ =====
+// Переключение на регистрацию
 if (openRegisterBtn) {
     openRegisterBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -371,7 +364,7 @@ if (openRegisterBtn) {
     });
 }
 
-// ===== ПЕРЕКЛЮЧЕНИЕ НА ВХОД =====
+// Переключение на вход
 if (openLoginFromRegister) {
     openLoginFromRegister.addEventListener('click', function(e) {
         e.preventDefault();
@@ -379,7 +372,7 @@ if (openLoginFromRegister) {
     });
 }
 
-// ===== ВОССТАНОВЛЕНИЕ ПАРОЛЯ =====
+// Восстановление пароля
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', function(e) {
         e.preventDefault();
@@ -396,9 +389,78 @@ if (forgotPasswordLink) {
     });
 }
 
-// ===== ЗАКРЫТИЕ ПО КЛИКУ ВНЕ МОДАЛКИ =====
+// Закрытие по клику вне модалки
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal-login')) {
         closeAllModals();
+    }
+});
+
+// ==========================================
+// РЕГИСТРАЦИЯ
+// ==========================================
+
+document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const passwordRepeat = document.getElementById('regPasswordRepeat').value;
+    const agree = document.getElementById('regAgree').checked;
+
+    if (!name) { alert('Введите имя'); return; }
+    if (!email) { alert('Введите email'); return; }
+    if (!email.includes('@')) { alert('Введите корректный email'); return; }
+    if (password.length < 6) { alert('Пароль должен быть минимум 6 символов'); return; }
+    if (password !== passwordRepeat) { alert('Пароли не совпадают'); return; }
+    if (!agree) { alert('Подтвердите согласие на обработку данных'); return; }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.find(u => u.email === email)) {
+        alert('Пользователь с таким email уже существует');
+        return;
+    }
+
+    users.push({ name, email, password });
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    alert('✅ Регистрация успешна! Теперь войдите.');
+    openLoginModal();
+});
+
+// ==========================================
+// ВХОД
+// ==========================================
+
+document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        alert(`✅ Добро пожаловать, ${user.name}!`);
+        closeAllModals();
+        const btn = document.querySelector('.button-primary .button-text');
+        if (btn) btn.textContent = user.name;
+    } else {
+        alert('❌ Неверный email или пароль');
+    }
+});
+
+// ==========================================
+// ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        const btn = document.querySelector('.button-primary .button-text');
+        if (btn) btn.textContent = currentUser.name;
     }
 });
