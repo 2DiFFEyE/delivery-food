@@ -36,6 +36,7 @@ function getCurrentRestaurant() {
     return titleEl ? titleEl.textContent.trim() : 'Неизвестный ресторан';
 }
 
+// ===== ОТКРЫТИЕ/ЗАКРЫТИЕ КОРЗИНЫ =====
 function toggleModal() {
     modal.classList.toggle("is-open");
     if (modal.classList.contains("is-open")) {
@@ -47,6 +48,20 @@ function toggleModal() {
 cartButton.addEventListener("click", toggleModal);
 close.addEventListener("click", toggleModal);
 cancelButton.addEventListener("click", toggleModal);
+
+// Закрытие корзины по клику вне модалки
+modal.addEventListener("click", function(e) {
+    if (e.target === modal) {
+        toggleModal();
+    }
+});
+
+// Закрытие корзины по Escape
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) {
+        toggleModal();
+    }
+});
 
 function addToCart(name, price, restaurant) {
     const existing = cart.find(item => item.name === name && item.price === price && item.restaurant === restaurant);
@@ -305,16 +320,13 @@ if (searchInput) {
 
 loadCart();
 
-
 // ==========================================
-// АВТОРИЗАЦИЯ (ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ)
+// АВТОРИЗАЦИЯ
 // ==========================================
 
-// Ждём загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM загружен, запускаем авторизацию');
 
-    // Находим все элементы
     const loginBtn = document.getElementById('loginBtnHeader');
     const loginModal = document.getElementById('loginModal');
     const registerModal = document.getElementById('registerModal');
@@ -323,8 +335,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const openRegisterBtn = document.getElementById('openRegisterBtn');
     const openLoginFromRegister = document.getElementById('openLoginFromRegister');
     const forgotPassword = document.getElementById('forgotPassword');
+    const loginBtnText = document.getElementById('loginBtnText');
 
-    // Функции
     function showLogin() {
         if (loginModal) loginModal.style.display = 'flex';
         if (registerModal) registerModal.style.display = 'none';
@@ -343,22 +355,29 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔒 Модалки закрыты');
     }
 
-    // Кнопка "Войти" в шапке
+    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ =====
     if (loginBtn) {
-        loginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLogin();
-        });
-        console.log('✅ Кнопка "Войти" привязана');
-    } else {
-        console.log('❌ Кнопка "Войти" не найдена!');
+        // Проверяем, есть ли уже авторизованный пользователь
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser && loginBtnText) {
+            loginBtnText.textContent = currentUser.name;
+            loginBtn.style.pointerEvents = 'none';
+            loginBtn.style.opacity = '0.8';
+            console.log(`👋 Привет, ${currentUser.name}!`);
+        } else {
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showLogin();
+            });
+            console.log('✅ Кнопка "Войти" привязана');
+        }
     }
 
-    // Крестики
+    // ===== КРЕСТИКИ =====
     if (closeLogin) closeLogin.addEventListener('click', closeAll);
     if (closeRegister) closeRegister.addEventListener('click', closeAll);
 
-    // Переключение на регистрацию
+    // ===== ПЕРЕКЛЮЧЕНИЕ =====
     if (openRegisterBtn) {
         openRegisterBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -366,7 +385,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Переключение на вход
     if (openLoginFromRegister) {
         openLoginFromRegister.addEventListener('click', function(e) {
             e.preventDefault();
@@ -374,14 +392,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Закрытие по клику вне модалки
+    // ===== ЗАКРЫТИЕ ПО КЛИКУ ВНЕ =====
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('modal-login')) {
             closeAll();
         }
     });
 
-    // Восстановление пароля
+    // ===== ВОССТАНОВЛЕНИЕ ПАРОЛЯ =====
     if (forgotPassword) {
         forgotPassword.addEventListener('click', function(e) {
             e.preventDefault();
@@ -411,7 +429,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const passwordRepeat = document.getElementById('regPasswordRepeat').value;
             const agree = document.getElementById('regAgree').checked;
 
-            // Проверки
             if (!name) { alert('❌ Введите имя'); return; }
             if (!email) { alert('❌ Введите email'); return; }
             if (!email.includes('@')) { alert('❌ Введите корректный email'); return; }
@@ -419,7 +436,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (password !== passwordRepeat) { alert('❌ Пароли не совпадают'); return; }
             if (!agree) { alert('❌ Подтвердите согласие на обработку данных'); return; }
 
-            // Сохраняем
             const users = JSON.parse(localStorage.getItem('users')) || [];
             if (users.find(u => u.email === email)) {
                 alert('❌ Пользователь с таким email уже существует');
@@ -451,19 +467,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 alert(`✅ Добро пожаловать, ${user.name}!`);
                 closeAll();
-                const btn = document.getElementById('loginBtnText');
-                if (btn) btn.textContent = user.name;
+                if (loginBtnText) {
+                    loginBtnText.textContent = user.name;
+                }
+                if (loginBtn) {
+                    loginBtn.style.pointerEvents = 'none';
+                    loginBtn.style.opacity = '0.8';
+                }
+                // Обновляем страницу, чтобы применить изменения
+                setTimeout(() => location.reload(), 500);
             } else {
                 alert('❌ Неверный email или пароль');
             }
         });
-    }
-
-    // ===== Проверка авторизации при загрузке =====
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        const btn = document.getElementById('loginBtnText');
-        if (btn) btn.textContent = currentUser.name;
-        console.log(`👋 Привет, ${currentUser.name}!`);
     }
 });
