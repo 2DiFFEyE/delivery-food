@@ -48,61 +48,92 @@
     <!-- ===== СКРИПТ КАРТЫ ===== -->
     <script src="https://api-maps.yandex.ru/2.1/?apikey=332569e2-7161-4562-b2ea-d77c991908b4&lang=ru_RU"></script>
     <script>
-        // ==========================================
-        // КАРТА (ПРОСТОЙ РАБОЧИЙ ВАРИАНТ)
-        // ==========================================
+const addressInput = document.getElementById('addressInput');
+const addressDisplay = document.getElementById('addressDisplay');
+const mainAddressInput = document.getElementById('mainAddressInput');
 
-        const addressInput = document.getElementById('addressInput');
-        const addressDisplay = document.getElementById('addressDisplay');
-        const mainAddressInput = document.getElementById('mainAddressInput');
+function updateAddress(value) {
+    const val = value.trim() || 'Адрес не указан';
 
-        function updateAddress(value) {
-            const val = value.trim() || 'Адрес не указан';
-            if (addressInput) addressInput.value = val;
-            if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
-            if (mainAddressInput) mainAddressInput.value = val;
-        }
+    if (addressInput) addressInput.value = val;
+    if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
+    if (mainAddressInput) mainAddressInput.value = val;
+}
 
-        // Синхронизация полей
-        if (addressInput) {
-            addressInput.addEventListener('input', function() {
-                updateAddress(this.value);
-            });
-        }
-        if (mainAddressInput) {
-            mainAddressInput.addEventListener('input', function() {
-                updateAddress(this.value);
-            });
-        }
+const savedAddress = localStorage.getItem('selectedAddress');
 
-        ymaps.ready(function() {
-            var map = new ymaps.Map('map', {
-                center: [55.3549, 86.0877],
-                zoom: 14,
-                controls: ['zoomControl']
-            });
+if (savedAddress) {
+    updateAddress(savedAddress);
+}
 
-            var placemark = new ymaps.Placemark([55.3549, 86.0877], {
-                hintContent: 'Кликните по карте, чтобы поставить метку'
-            }, {
-                draggable: true,
-                preset: 'islands#blueCircleDotIcon'
-            });
+if (addressInput) {
+    addressInput.addEventListener('input', function() {
+        updateAddress(this.value);
+    });
+}
 
-            map.geoObjects.add(placemark);
+if (mainAddressInput) {
+    mainAddressInput.addEventListener('input', function() {
+        updateAddress(this.value);
+    });
+}
 
-            // Клик по карте — ставим метку
-            map.events.add('click', function(e) {
-                var coords = e.get('coords');
-                placemark.geometry.setCoordinates(coords);
-            });
+ymaps.ready(function() {
 
-            // Перетаскивание метки
-            placemark.events.add('dragend', function() {
-                var coords = placemark.geometry.getCoordinates();
-            });
+    var startCoords = [55.3549, 86.0877];
+
+    var map = new ymaps.Map('map', {
+        center: startCoords,
+        zoom: 14,
+        controls: ['zoomControl']
+    });
+
+    var placemark = new ymaps.Placemark(startCoords, {
+        hintContent: 'Выберите адрес'
+    }, {
+        draggable: true,
+        preset: 'islands#blueCircleDotIcon'
+    });
+
+    map.geoObjects.add(placemark);
+
+    function getAddress(coords) {
+
+        ymaps.geocode(coords).then(function(res) {
+
+            var firstGeoObject = res.geoObjects.get(0);
+
+            if (!firstGeoObject) return;
+
+            var address = firstGeoObject.getAddressLine();
+
+            updateAddress(address);
+
+            localStorage.setItem('selectedAddress', address);
+
         });
-    </script>
+    }
+
+    map.events.add('click', function(e) {
+
+        var coords = e.get('coords');
+
+        placemark.geometry.setCoordinates(coords);
+
+        getAddress(coords);
+
+    });
+
+    placemark.events.add('dragend', function() {
+
+        var coords = placemark.geometry.getCoordinates();
+
+        getAddress(coords);
+
+    });
+
+});
+</script>
 
     <main class="main">
         <div class="container">
