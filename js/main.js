@@ -2,10 +2,15 @@
 // АВТОРИЗАЦИЯ НА ВСЕХ СТРАНИЦАХ
 // ==========================================
 
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const loginBtnText = document.getElementById('loginBtnText');
     const loginBtn = document.getElementById('loginBtnHeader');
+
+    console.log('🔍 Проверка авторизации...');
+    console.log('currentUser:', currentUser);
+    console.log('loginBtnText:', loginBtnText);
+    console.log('loginBtn:', loginBtn);
 
     if (currentUser && loginBtnText) {
         loginBtnText.textContent = currentUser.name;
@@ -22,8 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loginBtnText) {
             loginBtnText.textContent = 'Войти';
         }
+        console.log('👤 Пользователь не авторизован');
     }
-});
+})();
 // ==========================================
 // КОРЗИНА
 // ==========================================
