@@ -26,6 +26,21 @@ pool.query(`
     console.log('✅ Таблица users готова');
 }).catch(err => {
     console.error('❌ Ошибка создания таблицы:', err);
+
+});
+pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        phone TEXT,
+        password TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+    );
+`).then(() => {
+    console.log('✅ Таблица users готова');
+}).catch(err => {
+    console.error('❌ Ошибка создания таблицы:', err);
 });
 
 app.use(express.json());
@@ -50,8 +65,8 @@ app.get("/:page.html", (req, res) => {
 // ===== РЕГИСТРАЦИЯ =====
 app.post("/api/register", async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        console.log("📝 Регистрация:", { name, email });
+        const { name, email, phone, password } = req.body;
+        console.log("📝 Регистрация:", { name, email, phone });
 
         const check = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (check.rows.length > 0) {
@@ -59,8 +74,8 @@ app.post("/api/register", async (req, res) => {
         }
 
         await pool.query(
-            "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)",
-            [name, email, password]
+            "INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4)",
+            [name, email, phone || null, password]
         );
 
         res.json({ ok: true, message: "Регистрация успешна!" });
@@ -141,7 +156,7 @@ app.post("/order", async (req, res) => {
 ${items || "Нет товаров"}
 
 💰 **Итого:** ${total || "0"} ₽
-        `;
+`;
 
         if (global.chatIdAdmin) {
             await sendMessage(global.chatIdAdmin, message);

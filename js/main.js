@@ -465,10 +465,11 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('📝 Отправка регистрации...');
 
             const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const passwordRepeat = document.getElementById('regPasswordRepeat').value;
-            const agree = document.getElementById('regAgree').checked;
+const email = document.getElementById('regEmail').value.trim();
+const phone = document.getElementById('regPhone').value.trim();
+const password = document.getElementById('regPassword').value;
+const passwordRepeat = document.getElementById('regPasswordRepeat').value;
+const agree = document.getElementById('regAgree').checked;
 
             if (!name) { alert('❌ Введите имя'); return; }
             if (!email) { alert('❌ Введите email'); return; }
@@ -478,10 +479,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!agree) { alert('❌ Подтвердите согласие на обработку данных'); return; }
 
             fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
-            })
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, phone, password })
+})
+
             .then(res => res.json())
             .then(data => {
                 if (data.ok) {
