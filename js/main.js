@@ -1,16 +1,12 @@
 // ==========================================
-// АВТОРИЗАЦИЯ НА ВСЕХ СТРАНИЦАХ
+// ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ
 // ==========================================
 
-(function() {
+// Функция проверки авторизации
+function checkAuth() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const loginBtnText = document.getElementById('loginBtnText');
     const loginBtn = document.getElementById('loginBtnHeader');
-
-    console.log('🔍 Проверка авторизации...');
-    console.log('currentUser:', currentUser);
-    console.log('loginBtnText:', loginBtnText);
-    console.log('loginBtn:', loginBtn);
 
     if (currentUser && loginBtnText) {
         loginBtnText.textContent = currentUser.name;
@@ -19,6 +15,7 @@
             loginBtn.style.opacity = '0.8';
         }
         console.log(`👋 Привет, ${currentUser.name}!`);
+        return true;
     } else {
         if (loginBtn) {
             loginBtn.style.pointerEvents = 'auto';
@@ -28,8 +25,13 @@
             loginBtnText.textContent = 'Войти';
         }
         console.log('👤 Пользователь не авторизован');
+        return false;
     }
-})();
+}
+
+// Вызываем сразу при загрузке
+checkAuth();
+
 // ==========================================
 // КОРЗИНА
 // ==========================================
@@ -549,15 +551,4 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(() => alert('❌ Ошибка сервера'));
         });
     }
-
-    // ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && loginBtnText) {
-        loginBtnText.textContent = currentUser.name;
-        if (loginBtn) {
-            loginBtn.style.pointerEvents = 'none';
-            loginBtn.style.opacity = '0.8';
-        }
-        console.log(`👋 Привет, ${currentUser.name}!`);
-    }
-});
+}); // ← ЭТО ЗАКРЫВАЕТ DOMContentLoaded
