@@ -1,38 +1,4 @@
 // ==========================================
-// ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ
-// ==========================================
-
-// Функция проверки авторизации
-function checkAuth() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const loginBtnText = document.getElementById('loginBtnText');
-    const loginBtn = document.getElementById('loginBtnHeader');
-
-    if (currentUser && loginBtnText) {
-        loginBtnText.textContent = currentUser.name;
-        if (loginBtn) {
-            loginBtn.style.pointerEvents = 'none';
-            loginBtn.style.opacity = '0.8';
-        }
-        console.log(`👋 Привет, ${currentUser.name}!`);
-        return true;
-    } else {
-        if (loginBtn) {
-            loginBtn.style.pointerEvents = 'auto';
-            loginBtn.style.opacity = '1';
-        }
-        if (loginBtnText) {
-            loginBtnText.textContent = 'Войти';
-        }
-        console.log('👤 Пользователь не авторизован');
-        return false;
-    }
-}
-
-// Вызываем сразу при загрузке
-checkAuth();
-
-// ==========================================
 // КОРЗИНА
 // ==========================================
 
@@ -377,7 +343,29 @@ loadCart();
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM загружен, запускаем авторизацию');
 
+    // ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const loginBtnText = document.getElementById('loginBtnText');
     const loginBtn = document.getElementById('loginBtnHeader');
+
+    if (currentUser && loginBtnText) {
+        loginBtnText.textContent = currentUser.name;
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'none';
+            loginBtn.style.opacity = '0.8';
+        }
+        console.log(`👋 Привет, ${currentUser.name}!`);
+    } else {
+        if (loginBtn) {
+            loginBtn.style.pointerEvents = 'auto';
+            loginBtn.style.opacity = '1';
+        }
+        if (loginBtnText) {
+            loginBtnText.textContent = 'Войти';
+        }
+        console.log('👤 Пользователь не авторизован');
+    }
+
     const loginModal = document.getElementById('loginModal');
     const registerModal = document.getElementById('registerModal');
     const closeLogin = document.getElementById('closeLogin');
@@ -385,7 +373,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const openRegisterBtn = document.getElementById('openRegisterBtn');
     const openLoginFromRegister = document.getElementById('openLoginFromRegister');
     const forgotPassword = document.getElementById('forgotPassword');
-    const loginBtnText = document.getElementById('loginBtnText');
 
     function showLogin() {
         if (loginModal) loginModal.style.display = 'flex';
@@ -405,22 +392,13 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔒 Модалки закрыты');
     }
 
-    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ =====
-    if (loginBtn) {
-        // Проверяем, есть ли уже авторизованный пользователь
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser && loginBtnText) {
-            loginBtnText.textContent = currentUser.name;
-            loginBtn.style.pointerEvents = 'none';
-            loginBtn.style.opacity = '0.8';
-            console.log(`👋 Привет, ${currentUser.name}!`);
-        } else {
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                showLogin();
-            });
-            console.log('✅ Кнопка "Войти" привязана');
-        }
+    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ (если нет пользователя) =====
+    if (loginBtn && !currentUser) {
+        loginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLogin();
+        });
+        console.log('✅ Кнопка "Войти" привязана');
     }
 
     // ===== КРЕСТИКИ =====
@@ -493,7 +471,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (password !== passwordRepeat) { alert('❌ Пароли не совпадают'); return; }
             if (!agree) { alert('❌ Подтвердите согласие на обработку данных'); return; }
 
-            // Отправляем на сервер
             fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -522,7 +499,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            // Отправляем на сервер
             fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -531,7 +507,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(data => {
                 if (data.ok) {
-                    // Сохраняем пользователя в localStorage
                     localStorage.setItem('currentUser', JSON.stringify(data.user));
                     alert(`✅ Добро пожаловать, ${data.user.name}!`);
                     closeAll();
@@ -542,7 +517,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         loginBtn.style.pointerEvents = 'none';
                         loginBtn.style.opacity = '0.8';
                     }
-                    // Обновляем страницу
                     setTimeout(() => location.reload(), 500);
                 } else {
                     alert('❌ ' + data.message);
