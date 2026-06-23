@@ -537,18 +537,38 @@ body {
         max-width: 560px;
     }
 
-    .promo {
-        background-size: 400px;
-        background-position: bottom 50px right -200px;
+        .promo {
+        background: #FFF1B8;
+        padding: 25px 20px 20px 20px;
+        background-image: url(../img/promo-img.png);
+        background-size: 120px;
+        background-position: bottom right 15px;
+        background-repeat: no-repeat;
+        margin-bottom: 25px;
+        border-radius: 10px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-top: 10px; /* ← ЧУТЬ НИЖЕ */
+        padding-top: 30px; /* ← БОЛЬШЕ ВЕРХНИЙ ОТСТУП */
     }
 
     .promo-title {
-        font-size: 24px;
-        line-height: 1.4;
+        font-size: 20px;
+        margin-bottom: 6px;
+        max-width: 70%;
+        line-height: 1.3;
+        color: #302C34;
     }
 
     .promo-text {
+        font-size: 14px;
+        max-width: 65%;
+        line-height: 1.4;
+        color: #302C34;
         margin-top: 0;
+        margin-bottom: 0;
     }
 
     .card-title {
