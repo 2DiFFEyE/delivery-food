@@ -46,7 +46,6 @@ function toggleModal() {
 
 cartButton.addEventListener("click", toggleModal);
 
-// Закрытие корзины через крестик
 if (close) {
     close.addEventListener("click", function(e) {
         e.preventDefault();
@@ -369,30 +368,26 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔒 Модалки закрыты');
     }
 
-        // ===== КНОПКА "ВОЙТИ" В ШАПКЕ (пересоздаём, чтобы убрать старые обработчики) =====
+    // ===== КНОПКА "ВОЙТИ" В ШАПКЕ =====
     const oldLoginBtn = document.getElementById('loginBtnHeader');
     const loginBtnText = document.getElementById('loginBtnText');
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // Удаляем старую кнопку и создаём новую
     if (oldLoginBtn && oldLoginBtn.parentNode) {
         const newLoginBtn = oldLoginBtn.cloneNode(true);
         oldLoginBtn.parentNode.replaceChild(newLoginBtn, oldLoginBtn);
     }
 
-    // Получаем ссылку на новую кнопку
     const loginBtn = document.getElementById('loginBtnHeader');
     const newLoginBtnText = document.getElementById('loginBtnText');
 
-    // Проверяем авторизацию
     if (currentUser && newLoginBtnText) {
         newLoginBtnText.textContent = currentUser.name;
         if (loginBtn) {
             loginBtn.style.pointerEvents = 'none';
             loginBtn.style.opacity = '0.8';
         }
-        // Показываем кнопку "Выйти"
         if (logoutBtn) logoutBtn.style.display = 'inline-block';
         console.log(`👋 Привет, ${currentUser.name}!`);
     } else {
@@ -408,7 +403,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             console.log('✅ Кнопка "Войти" привязана');
         }
-        // Скрываем кнопку "Выйти"
         if (logoutBtn) logoutBtn.style.display = 'none';
     }
 
@@ -417,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
         logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
             localStorage.removeItem('currentUser');
-            // Обновляем кнопку
             const btnText = document.getElementById('loginBtnText');
             const btn = document.getElementById('loginBtnHeader');
             if (btnText) btnText.textContent = 'Войти';
@@ -430,27 +423,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => location.reload(), 300);
         });
     }
-
-    // ===== ВЫХОД ИЗ АККАУНТА =====
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        localStorage.removeItem('currentUser');
-        // Обновляем кнопку
-        const btnText = document.getElementById('loginBtnText');
-        const btn = document.getElementById('loginBtnHeader');
-        if (btnText) btnText.textContent = 'Войти';
-        if (btn) {
-            btn.style.pointerEvents = 'auto';
-            btn.style.opacity = '1';
-        }
-        logoutBtn.style.display = 'none';
-        alert('👋 Вы вышли из аккаунта');
-        // Перезагружаем страницу, чтобы обновить состояние
-        setTimeout(() => location.reload(), 300);
-    });
-}
 
     // ===== КРЕСТИКИ =====
     if (closeLogin) closeLogin.addEventListener('click', closeAll);
@@ -510,11 +482,11 @@ if (logoutBtn) {
             console.log('📝 Отправка регистрации...');
 
             const name = document.getElementById('regName').value.trim();
-const email = document.getElementById('regEmail').value.trim();
-const phone = document.getElementById('regPhone').value.trim();
-const password = document.getElementById('regPassword').value;
-const passwordRepeat = document.getElementById('regPasswordRepeat').value;
-const agree = document.getElementById('regAgree').checked;
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const passwordRepeat = document.getElementById('regPasswordRepeat').value;
+            const agree = document.getElementById('regAgree').checked;
 
             if (!name) { alert('❌ Введите имя'); return; }
             if (!email) { alert('❌ Введите email'); return; }
@@ -524,11 +496,10 @@ const agree = document.getElementById('regAgree').checked;
             if (!agree) { alert('❌ Подтвердите согласие на обработку данных'); return; }
 
             fetch('/api/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, phone, password })
-})
-
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, phone, password })
+            })
             .then(res => res.json())
             .then(data => {
                 if (data.ok) {
@@ -563,7 +534,6 @@ const agree = document.getElementById('regAgree').checked;
                     localStorage.setItem('currentUser', JSON.stringify(data.user));
                     alert(`✅ Добро пожаловать, ${data.user.name}!`);
                     closeAll();
-                    // Обновляем кнопку без перезагрузки
                     const btnText = document.getElementById('loginBtnText');
                     const btn = document.getElementById('loginBtnHeader');
                     if (btnText) btnText.textContent = data.user.name;
@@ -571,6 +541,8 @@ const agree = document.getElementById('regAgree').checked;
                         btn.style.pointerEvents = 'none';
                         btn.style.opacity = '0.8';
                     }
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) logoutBtn.style.display = 'inline-block';
                 } else {
                     alert('❌ ' + data.message);
                 }
