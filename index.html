@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Delivery Food - доставка еды на дом</title>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/normalize.css"> 
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="header">
+	<div class="container">
+		<a href="index.html" class="logo"><img src="img/logo.svg" alt="logo"></a>
+		<input type="text" class="input input-addres" placeholder="Адрес доставки">
+		<div class="buttons">
+			<button class="button button-primary">
+				<img src="img/user.svg" alt="user" class="button-icon">
+				<span class="button-text">Войти</span>
+			</button>
+			<button class="button" id="cart-button">
+				<img src="img/shopping-cart.svg" alt="shopping cart" class="button-icon">
+				<span class="button-text">Корзина</span>  
+			</button>
+		</div>
+	</div>
+</header>
+
+<main class="main">
+	<div class="container">
+		<section class="promo">
+			<h1 class="promo-title">Онлайн-сервис<br>доставки еды на дом</h1>
+			<p class="promo-text">
+				Блюда из любимого ресторана привезет курьер в перчатках, маске и с антисептиком
+			</p>	
+		</section>
+
+		<section class="restaurants">
+			<div class="section-heading">
+				<h2 class="section-title">Рестораны</h2>
+				<input type="text" class="input input-search" placeholder="Поиск ресторанов">
+			</div>
+			<div class="cards">
+			<div class="no-result" style="display: none; text-align: center; padding: 30px 0; font-size: 18px; color: #888;">
+  😕 Ничего не найдено. Попробуйте изменить запрос. </div>
+				<!-- 1. Гриль № 1 -->
+				<a href="grill1.html" class="card">
+					<img src="img/card-GrillNO.jpeg" class="card-img" alt="Гриль № 1">
+					<div class="card-text">
+						<div class="card-heading">
+							<h3 class="card-title">Гриль № 1</h3>
+							<span class="card-tag">40 мин</span>
+						</div>
+						<div class="card-info">
+							<div class="raiting">
+								<img src="img/star.svg" alt="rating" class="raiting-star">
+								4.6
+							</div>
+							<div class="price">От 700 ₽</div>
+							<div class="category">Гриль</div>
+						</div>	
+					</div>
+				</a>
+				<!-- 2. Шашлыкoff -->
+				<a href="shashlykoff.html" class="card">
+					<img src="img/card-shahlik.jpg" class="card-img" alt="Шашлыкoff">
+					<div class="card-text">
+						<div class="card-heading">
+							<h3 class="card-title">Шашлыкoff</h3>
+							<span class="card-tag">35 мин</span>
+						</div>
+						<div class="card-info">
+							<div class="raiting">
+								<img src="img/star.svg" alt="rating" class="raiting-star">
+								4.8
+							</div>
+							<div class="price">От 600 ₽</div>
+							<div class="category">Шашлыки</div>
+						</div>	
+					</div>
+				</a>
+				<!-- 3. Арарат -->
+				<a href="ararat.html" class="card">
+					<img src="img/card-ararat.jpg" class="card-img" alt="Арарат">
+					<div class="card-text">
+						<div class="card-heading">
+							<h3 class="card-title">Арарат</h3>
+							<span class="card-tag">50 мин</span>
+						</div>
+						<div class="card-info">
+							<div class="raiting">
+								<img src="img/star.svg" alt="rating" class="raiting-star">
+								4.5
+							</div>
+							<div class="price">От 650 ₽</div>
+							<div class="category">Армянская</div>
+						</div>	
+					</div>
+				</a>
+				<!-- 4. Гриль-бар42 -->
+				<a href="grillbar42.html" class="card">
+					<img src="img/card-grill42.png" class="card-img" alt="Гриль-бар42">
+					<div class="card-text">
+						<div class="card-heading">
+							<h3 class="card-title">Гриль-бар42</h3>
+							<span class="card-tag">45 мин</span>
+						</div>
+						<div class="card-info">
+							<div class="raiting">
+								<img src="img/star.svg" alt="rating" class="raiting-star">
+								4.3
+							</div>
+							<div class="price">От 750 ₽</div>
+							<div class="category">Гриль &amp; Пиво</div>
+						</div>	
+					</div>
+				</a>
+				<!-- 5. Дубай аравия -->
+				<a href="dubai_arabia.html" class="card">
+					<img src="img/card-dubaiarab.jpg" class="card-img" alt="Дубай аравия">
+					<div class="card-text">
+						<div class="card-heading">
+							<h3 class="card-title">Дубай арабия</h3>
+							<span class="card-tag">55 мин</span>
+						</div>
+						<div class="card-info">
+							<div class="raiting">
+								<img src="img/star.svg" alt="rating" class="raiting-star">
+								4.5
+							</div>
+							<div class="price">От 680 ₽</div>
+							<div class="category">Восточная</div>
+						</div>	
+					</div>
+				</a>
+				<!-- 6. Бангкок -->
+				<a href="bangkok.html" class="card">
+					<img src="img/card-bangkok.png" class="card-img" alt="Бангкок">
+					<div class="card-text">
+						<div class="card-heading">
+							<h3 class="card-title">Бангкок</h3>
+							<span class="card-tag">40 мин</span>
+						</div>
+						<div class="card-info">
+							<div class="raiting">
+								<img src="img/star.svg" alt="rating" class="raiting-star">
+								4.9
+							</div>
+							<div class="price">От 750 ₽</div>
+							<div class="category">Тайская</div>
+						</div>	
+					</div>
+				</a>
+			</div>	
+		</section>
+	</div>
+</main>
+
+<footer class="footer">
+	<div class="container">
+		<div class="footer-block">
+			<img src="img/logo.svg" alt="logo" class="logo footer-logo">
+			<nav class="footer-nav">
+				<a href="#" class="footer-link">Ресторанам</a>
+				<a href="#" class="footer-link">Курьерам</a>
+				<a href="#" class="footer-link">Пресс-центр</a>
+				<a href="#" class="footer-link">Контакты</a>
+			</nav>
+			<div class="social-links">
+				
+				<a href="#" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<!-- Модальное окно корзины -->
+<div class="modal">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<h3 class="modal-title">Корзина</h3>
+			<button class="close">&times;</button>
+		</div>
+		<div style="padding: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+  <label for="restaurant-filter" style="font-size: 14px; color: #555;">Фильтр по ресторану:</label>
+  <select id="restaurant-filter" style="padding: 5px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 14px;">
+    <option value="all">Все рестораны</option>
+  </select>
+</div>
+		<div class="modal-body">
+			<!-- Здесь будет динамическое содержимое корзины -->
+			<p style="text-align: center; color: #888; padding: 20px 0;">Корзина пуста</p>
+		</div>
+		<div class="modal-footer">
+			<span class="modal-pricetag">0 ₽</span>
+			<div class="footer-buttons">
+				<button class="button button-primary">Оформить заказ</button>
+				<button class="button">Отмена</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

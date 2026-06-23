@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Шашлыкoff - доставка еды на дом</title>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/normalize.css"> 
+	<link rel="stylesheet" href="css/animate.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<a href="index.html" class="logo"><img src="img/logo.svg" alt="logo"></a>
+			<input type="text" class="input input-addres" placeholder="Адрес доставки">
+			<div class="buttons">
+				<button class="button button-primary">
+					<img src="img/user.svg" alt="user" class="button-icon">
+					<span class="button-text">Войти</span>
+				</button>
+				<button class="button" id="cart-button">
+					<img src="img/shopping-cart.svg" alt="shopping cart" class="button-icon">
+					<span class="button-text">Корзина</span>  
+				</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			<section class="restaurants">
+				<div class="section-heading">
+					<h2 class="section-title">Шашлыкoff</h2>
+					<div class="card-info">
+						<div class="raiting">
+							<img src="img/star.svg" alt="rating" class="raiting-star">
+							4.8
+						</div>
+						<div class="price">От 600 ₽</div>
+						<div class="category">Шашлыки</div>
+					</div>	
+				</div>
+				<div class="cards">
+					<div class="card wow fadeInUp" data-wow-delay="0.2s">
+						<img src="img/Shahlikoff/svinina.jpg" class="card-img" alt="Шашлык из свинины">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Шашлык из свинины</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Свинина, уксус, лук</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">500 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<div class="card wow fadeInUp" data-wow-delay="0.4s">
+						<img src="img/Shahlikoff/kuritca.webp" class="card-img" alt="Шашлык из курицы">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Шашлык из курицы</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Курица, майонез, специи</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">450 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<div class="card wow fadeInUp" data-wow-delay="0.6s">
+						<img src="img/Shahlikoff/baranina.jpg" class="card-img" alt="Шашлык из баранины">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Шашлык из баранины</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Баранина, лимон, зира</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">580 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<div class="card wow fadeInUp" data-wow-delay="0.2s">
+						<img src="img/Shahlikoff/losos.webp" class="card-img" alt="Шашлык из лосося">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Шашлык из лосося</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Лосось, соевый соус, имбирь</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">700 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<div class="card wow fadeInUp" data-wow-delay="0.4s">
+						<img src="img/Shahlikoff/ovoshi.webp" class="card-img" alt="Овощной шашлык">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Овощной шашлык</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Помидоры, перец, лук, грибы</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">350 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<div class="card wow fadeInUp" data-wow-delay="0.6s">
+						<img src="img/Shahlikoff/lavash.webp" class="card-img" alt="Лаваш с мясом">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Лаваш с мясом</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Лаваш, мясо, соус</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">400 ₽</strong>
+							</div>	
+						</div>
+					</div>
+				</div>	
+			</section>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-block">
+				<img src="img/logo.svg" alt="logo" class="logo footer-logo">
+				<nav class="footer-nav">
+					<a href="#" class="footer-link">Ресторанам</a>
+					<a href="#" class="footer-link">Курьерам</a>
+					<a href="#" class="footer-link">Пресс-центр</a>
+					<a href="#" class="footer-link">Контакты</a>
+				</nav>
+				<div class="social-links">
+					
+					<a href="#" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<div class="modal">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h3 class="modal-title">Корзина</h3>
+				<button class="close">&times;</button>
+			</div>
+			<div style="padding: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+				<label for="restaurant-filter" style="font-size: 14px; color: #555;">Фильтр по ресторану:</label>
+				<select id="restaurant-filter" style="padding: 5px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 14px;">
+					<option value="all">Все рестораны</option>
+				</select>
+			</div>
+			<div class="modal-body">
+				<p style="text-align: center; color: #888; padding: 20px 0;">Корзина пуста</p>
+			</div>
+			<div class="modal-footer">
+				<span class="modal-pricetag">0 ₽</span>
+				<div class="footer-buttons">
+					<button class="button button-primary">Оформить заказ</button>
+					<button class="button">Отмена</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/wow.min.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>

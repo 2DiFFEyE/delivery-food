@@ -1,0 +1,43 @@
+# Зависимости (Node.js)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Секретные данные
+.env
+.env.local
+.env.*.local
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Логи
+*.log
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Временные файлы
+*.tmp
+*.temp
+*.cache
+
+# Сборки
+dist/
+build/
+*.min.js
+*.min.css
+
+# Railway (не обязательно, но можно добавить)
+.railway/

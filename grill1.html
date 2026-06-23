@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Гриль № 1 - доставка еды на дом</title>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/normalize.css"> 
+	<link rel="stylesheet" href="css/animate.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<a href="index.html" class="logo"><img src="img/logo.svg" alt="logo"></a>
+			<input type="text" class="input input-addres" placeholder="Адрес доставки">
+			<div class="buttons">
+				<button class="button button-primary">
+					<img src="img/user.svg" alt="user" class="button-icon">
+					<span class="button-text">Войти</span>
+				</button>
+				<button class="button" id="cart-button">
+					<img src="img/shopping-cart.svg" alt="shopping cart" class="button-icon">
+					<span class="button-text">Корзина</span>  
+				</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			    <!-- Блок с картой для выбора адреса доставки -->
+    <section class="map-section" style="margin-bottom: 30px;">
+      <div class="map-container" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e9e9e9;">
+        <!-- Яндекс.Карта -->
+        <iframe 
+          src="https://yandex.ru/map-widget/v1/?um=constructor%3A2f4b8c5e6d9a1b3c7f8e2d4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5&source=constructor" 
+          style="display: block; width: 100%; height: 280px; border: none;"
+          allowfullscreen>
+        </iframe>
+        <div style="background: #f8f8f8; padding: 16px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; border-top: 1px solid #e9e9e9;">
+          <label style="font-weight: 500; color: #333; font-size: 15px; display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 20px;">📍</span> Адрес доставки
+          </label>
+          <input type="text" id="addressInputMain" placeholder="Введите адрес вручную" value="ул. Пушкина, 10" style="flex: 2; min-width: 180px; padding: 10px 14px; border: 1px solid #ccc; border-radius: 30px; font-size: 15px; outline: none; transition: 0.2s;">
+          <span id="selectedAddressDisplay" style="font-size: 14px; color: #555; background: #fff; padding: 6px 16px; border-radius: 30px; border: 1px dashed #bbb; white-space: nowrap;">
+            📍 ул. Пушкина, 10
+          </span>
+        </div>
+      </div>
+      <p style="font-size: 14px; color: #777; margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-block; width: 8px; height: 8px; background: #ff7020; border-radius: 50%;"></span>
+        Кликните по карте или введите адрес вручную
+      </p>
+    </section>
+    <!-- Конец блока с картой -->
+			<section class="restaurants">
+				<div class="section-heading">
+					<h2 class="section-title">Гриль № 1</h2>
+					<div class="card-info">
+						<div class="raiting">
+							<img src="img/star.svg" alt="rating" class="raiting-star">
+							4.6
+						</div>
+						<div class="price">От 700 ₽</div>
+						<div class="category">Гриль</div>
+					</div>	
+				</div>
+				<div class="cards">
+					<!-- Блюдо 1 -->
+					<div class="card wow fadeInUp" data-wow-delay="0.2s">
+						<img src="img/Grill1/shavag1.jpg" class="card-img" alt="Стейк Рибай">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Классическая</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Лаваш
+, 
+филе цыпленка
+, 
+огурцы свежие
+, 
+томаты свежие
+, 
+капуста
+</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">От 249₽</strong>
+							</div>	
+						</div>
+					</div>
+					<!-- Блюдо 2 -->
+					<div class="card wow fadeInUp" data-wow-delay="0.4s">
+						<img src="img/Grill1/chicken.webp" class="card-img" alt="Куриное филе гриль">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Куриное филе гриль</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Курица, лимон, розмарин</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">450 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<!-- Блюдо 3 -->
+					<div class="card wow fadeInUp" data-wow-delay="0.6s">
+						<img src="img/Grill1/bbq.png" class="card-img" alt="Свиные ребрышки">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Свиные ребрышки BBQ</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Свинина, соус барбекю</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">580 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<!-- Блюдо 4 -->
+					<div class="card wow fadeInUp" data-wow-delay="0.2s">
+						<img src="img/Grill1/lulakebab.jpg" class="card-img" alt="Люля-кебаб">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Люля-кебаб</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Баранина, лук, перец</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">520 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<!-- Блюдо 5 -->
+					<div class="card wow fadeInUp" data-wow-delay="0.4s">
+						<img src="img/Grill1/ovoshi.jpg" class="card-img" alt="Овощи гриль">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Овощи гриль</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Цукини, баклажан, перец</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">320 ₽</strong>
+							</div>	
+						</div>
+					</div>
+					<!-- Блюдо 6 -->
+					<div class="card wow fadeInUp" data-wow-delay="0.6s">
+						<img src="img/Grill1/potatovill.jpg" class="card-img" alt="Картофель по-деревенски">
+						<div class="card-text">
+							<div class="card-heading">
+								<h3 class="card-title card-title-reg">Картофель по-деревенски</h3>
+							</div>
+							<div class="card-info">
+								<div class="ingredients">Картофель, специи</div>
+							</div>
+							<div class="card-buttons">
+								<button class="button button-primary">
+									<span class="button-card-text">В корзину</span> 
+									<img src="img/cart.svg" alt="cart" class="button-card-image">
+								</button>
+								<strong class="card-price-bold">250 ₽</strong>
+							</div>	
+						</div>
+					</div>
+				</div>	
+			</section>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-block">
+				<img src="img/logo.svg" alt="logo" class="logo footer-logo">
+				<nav class="footer-nav">
+					<a href="#" class="footer-link">Ресторанам</a>
+					<a href="#" class="footer-link">Курьерам</a>
+					<a href="#" class="footer-link">Пресс-центр</a>
+					<a href="#" class="footer-link">Контакты</a>
+				</nav>
+				<div class="social-links">
+					
+					<a href="#" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<div class="modal">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h3 class="modal-title">Корзина</h3>
+				<button class="close">&times;</button>
+			</div>
+			<div style="padding: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+  <label for="restaurant-filter" style="font-size: 14px; color: #555;">Фильтр по ресторану:</label>
+  <select id="restaurant-filter" style="padding: 5px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 14px;">
+    <option value="all">Все рестораны</option>
+  </select>
+</div>
+			<div class="modal-body">
+				<p style="text-align: center; color: #888; padding: 20px 0;">Корзина пуста</p>
+			</div>
+			<div class="modal-footer">
+				<span class="modal-pricetag">0 ₽</span>
+				<div class="footer-buttons">
+					<button class="button button-primary">Оформить заказ</button>
+					<button class="button">Отмена</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/wow.min.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
