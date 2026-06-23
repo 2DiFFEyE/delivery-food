@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="css/normalize.css"> 
 	<link rel="stylesheet" href="css/animate.css">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="icon" href="favicon.ico" type="image/svg+xml">
 </head>
 <body>
 	<header class="header">
@@ -26,7 +27,11 @@
 			</div>
 		</div>
 	</header>
-
+<div class="breadcrumbs" style="padding: 15px 0; font-size: 14px; color: #8C8C8C; border-bottom: 1px solid #f0f0f0; margin-bottom: 20px; text-align: center;">
+    <a href="index.html" style="color: #1890FF; text-decoration: none;">Главная</a>
+    <span style="margin: 0 8px;">→</span>
+    <span>Гриль-бар42</span>
+</div>
 	<main class="main">
 		<div class="container">
 			    <!-- Блок с картой для выбора адреса доставки -->
@@ -181,22 +186,25 @@
 	</main>
 
 	<footer class="footer">
-		<div class="container">
-			<div class="footer-block">
-				<img src="img/logo.svg" alt="logo" class="logo footer-logo">
-				<nav class="footer-nav">
-					<a href="#" class="footer-link">Ресторанам</a>
-					<a href="#" class="footer-link">Курьерам</a>
-					<a href="#" class="footer-link">Пресс-центр</a>
-					<a href="#" class="footer-link">Контакты</a>
-				</nav>
-				<div class="social-links">
-				
-					<a href="#" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
-				</div>
-			</div>
-		</div>
-	</footer>
+    <div class="container">
+        <div class="footer-block">
+            <img src="img/logo.svg" alt="logo" class="logo footer-logo">
+            <nav class="footer-nav">
+                <a href="#" class="footer-link">Ресторанам</a>
+                <a href="#" class="footer-link">Курьерам</a>
+                <a href="#" class="footer-link">Пресс-центр</a>
+                <a href="#" class="footer-link">Контакты</a>
+            </nav>
+            <div class="footer-contacts">
+                <a href="mailto:2diffeye@gmail.com" class="footer-link">📧 2diffeye@gmail.com</a>
+                <a href="tel:+79134124440" class="footer-link">📞 +7 (913) 412-44-40</a>
+            </div>
+            <div class="social-links">
+                <a href="https://vk.com/2diffeye" class="social-link"><img src="img/vk.svg" alt="vkontakte"></a>
+            </div>
+        </div>
+    </div>
+</footer>
 
 	<div class="modal">
 		<div class="modal-dialog">
@@ -226,4 +234,29 @@
 	<script src="js/wow.min.js"></script>
 	<script src="js/main.js"></script>
 </body>
+<!-- Кнопка "Наверх" -->
+<button id="scrollTop" style="position: fixed; bottom: 30px; right: 30px; background: #1890FF; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4); z-index: 999;">
+    ↑
+</button>
+
+<script>
+    const scrollBtn = document.getElementById('scrollTop');
+
+    window.addEventListener('scroll', () => {
+        // Показываем кнопку, когда прокрутили больше 500px
+        if (window.scrollY > 500) {
+            scrollBtn.style.opacity = '1';
+            scrollBtn.style.visibility = 'visible';
+            scrollBtn.style.transform = 'translateY(0)';
+        } else {
+            scrollBtn.style.opacity = '0';
+            scrollBtn.style.visibility = 'hidden';
+            scrollBtn.style.transform = 'translateY(20px)';
+        }
+    });
+
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
 </html>
