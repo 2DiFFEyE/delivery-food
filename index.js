@@ -87,7 +87,15 @@ app.post("/api/login", async (req, res) => {
         }
 
         const user = result.rows[0];
-        res.json({ ok: true, user: { id: user.id, name: user.name, email: user.email } });
+        res.json({ 
+            ok: true, 
+            user: { 
+                id: user.id, 
+                name: user.name, 
+                email: user.email,
+                phone: user.phone || '' 
+            } 
+        });
     } catch (error) {
         console.error("❌ Ошибка входа:", error);
         res.status(500).json({ ok: false, message: "Ошибка сервера" });
