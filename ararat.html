@@ -243,7 +243,7 @@
         });
     </script>
 
-    <!-- ===== СКРИПТ КАРТЫ (НОВЫЙ КЛЮЧ) ===== -->
+    <!-- ===== СКРИПТ КАРТЫ ===== -->
     <script src="https://api-maps.yandex.ru/2.1/?apikey=c28600f3-760a-4488-8c4e-c4a61dcc0708&lang=ru_RU"></script>
     <script>
         // ==========================================
@@ -259,7 +259,7 @@
             if (addressInput) addressInput.value = val;
             if (addressDisplay) addressDisplay.textContent = '📍 ' + val;
             if (mainAddressInput) mainAddressInput.value = val;
-            console.log('📍 Адрес:', val);
+            console.log('📍 Адрес обновлён:', val);
         }
 
         // Синхронизация полей
@@ -275,14 +275,17 @@
         }
 
         ymaps.ready(function() {
+            // Создаём карту
             var map = new ymaps.Map('map', {
                 center: [55.3549, 86.0877],
                 zoom: 14,
                 controls: ['zoomControl', 'geolocationControl']
             });
 
+            // Метка
             var placemark = new ymaps.Placemark([55.3549, 86.0877], {
-                hintContent: 'Перетащите или кликните по карте'
+                hintContent: 'Перетащите или кликните по карте',
+                balloonContent: 'Адрес доставки'
             }, {
                 draggable: true,
                 preset: 'islands#blueCircleDotIcon'
@@ -290,6 +293,7 @@
 
             map.geoObjects.add(placemark);
 
+            // Получение адреса по координатам
             function getAddressFromCoords(coords) {
                 ymaps.geocode(coords, { 
                     results: 1,
@@ -308,8 +312,26 @@
                         updateAddress('Адрес не определён');
                     }
                 })
-                .catch(function() {
-                    updateAddress('Кликните точнее');
+                .catch(function(err) {
+                    console.warn('⚠️ Ошибка геокодера:', err);
+                    // Пробуем ещё раз без kind
+                    ymaps.geocode(coords, { results: 1 })
+                        .then(function(res) {
+                            var first = res.geoObjects.get(0);
+                            if (first) {
+                                var address = first.getAddressLine() || 'Адрес не найден';
+                                updateAddress(address);
+                                placemark.properties.set({
+                                    hintContent: address,
+                                    balloonContent: address
+                                });
+                            } else {
+                                updateAddress('Кликните точнее');
+                            }
+                        })
+                        .catch(function() {
+                            updateAddress('Кликните точнее');
+                        });
                 });
             }
 
